@@ -30,14 +30,14 @@ The **Question Metadata Engine (QME)** — a backend AI pipeline that transforms
 
 Check `docs/ROADMAP.md` and `docs/IMPLEMENTATION_ORDER.md` to determine the current step. Update this section when a milestone closes.
 
-- **Current:** M3 — Taxonomy & Classification (Step 3): seed taxonomy, `taxonomy_loader`, LLM gateway + structured output + prompt manager, `QuestionClassifier` stage
-- **Closed:** M1 — Project Skeleton (Step 1); M2 — Ingestion (Step 2): JSONL/CSV/TXT parsers, normalizer, source tracker, `qme ingest` (134 tests). Docker files deferred (no Docker on this machine) until the deployment milestone.
-- **Next exit gate (M3):** `QuestionClassifier.classify()` returns a `ClassificationResult` through enforced structured output; unit tests pass with a mocked gateway; opt-in `ai_eval` gold-standard classification eval runs against `tests/ai_evaluation/gold_standard/`.
+- **Current:** M4 — Difficulty Engine (Step 4): `difficulty_v1.txt`, factor calculation (pure functions), `DifficultyEngine` stage, difficulty gold standard
+- **Closed:** M1 — Project Skeleton (Step 1); M2 — Ingestion (Step 2): JSONL/CSV/TXT parsers, normalizer, source tracker, `qme ingest` (134 tests); M3 — Taxonomy & Classification (Step 3): seed taxonomy (4 categories / 34 topics / 70 subtopics), `taxonomy_loader`, LLM gateway (Gemini free-tier default, strict structured output, headerless-429 body parsing) + prompt manager, `QuestionClassifier` — live gate `pytest -m ai_eval` = 25/25 category, 25/25 topic, 22/24 subtopic (197 tests). Docker files deferred (no Docker on this machine) until the deployment milestone.
+- **Next exit gate (M4):** `DifficultyEngine.score()` returns `DifficultyResult` (0-10 + factors + rating buckets easy 0-3.5 / medium 3.5-6.5 / hard 6.5-10) through the Protocol; deterministic factor unit tests; opt-in `ai_eval` difficulty correlation ≥ 0.8 against `tests/ai_evaluation/gold_standard/difficulty.jsonl`.
 
 ## Verification commands
 
 ```bash
-pytest tests -q   # all tests (134 as of M2 close)
+pytest tests -q   # all tests (197 as of M3 close; ai_eval deselected)
 ruff check src tests
 mypy
 make test         # same, via Makefile (requires GNU make; use commands above on Windows)
