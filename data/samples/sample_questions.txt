@@ -1,0 +1,32 @@
+Q: What is 40% of 450?
+A) 160
+B) 170
+C) 180
+D) 190
+Answer: C
+Source: Percentage Power Pack
+Page: 4
+ID: PC-001
+
+Q: The LCM of 6, 8 and 12 is:
+A) 12
+B) 24
+C) 36
+D) 48
+Answer: D
+Source: Number System Basics
+ID: NS-030
+
+Q: A car travels 180 km in 3 hours. What is its average speed?
+Answer: 60
+Source: Speed Distance Time Workbook
+Page: 2
+ID: SD-010
+
+Q: Which gas do plants absorb from the atmosphere?
+A) Oxygen
+B) Nitrogen
+C) Carbon dioxide
+D) Hydrogen
+Ans: C
+Source: GK Digest 2024

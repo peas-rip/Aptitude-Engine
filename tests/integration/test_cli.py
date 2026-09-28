@@ -28,9 +28,8 @@ def test_no_args_shows_help() -> None:
 
 
 def test_stub_commands_exit_nonzero_with_step_hint() -> None:
-    """Stubs fail loudly (never silently) and name their future step."""
+    """Unimplemented commands fail loudly (never silently) and name their step."""
     cases = [
-        (["ingest", "--input", "in.jsonl", "--output", "out"], "Step 2"),
         (["process", "--input", "in.jsonl", "--output", "out"], "Step 8"),
         (
             ["review", "--input", "r.jsonl", "--action", "approve", "--output", "o.jsonl"],

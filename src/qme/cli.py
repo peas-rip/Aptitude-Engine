@@ -1,7 +1,7 @@
 """QME command-line interface.
 
-Command shapes follow ``docs/API_CONTRACTS.md`` section 5. In M1 these are
-stubs; each prints which implementation step will fill it in.
+Command shapes follow ``docs/API_CONTRACTS.md`` section 5. ``ingest`` is
+implemented (Step 2); the rest remain loud stubs until their steps land.
 """
 
 from pathlib import Path
@@ -11,6 +11,9 @@ import typer
 
 from qme import __version__
 from qme.core.constants import ReviewAction
+from qme.core.exceptions import IngestionError
+from qme.ingestion import ingest_file
+from qme.output import write_jsonl
 
 app = typer.Typer(
     name="qme",
@@ -54,10 +57,35 @@ def main(
 def ingest(
     input: Annotated[Path, typer.Option("--input", help="Input file path.")],
     output: Annotated[Path, typer.Option("--output", help="Output directory.")],
-    format: Annotated[str, typer.Option("--format", help="jsonl | csv | txt | pdf | docx")] = "jsonl",
+    format: Annotated[
+        str | None,
+        typer.Option(
+            "--format",
+            help="jsonl | csv | txt | pdf | docx (default: detect from file).",
+        ),
+    ] = None,
 ) -> None:
     """Parse a raw file into normalized questions (FE-001, Step 2)."""
-    _not_implemented("Step 2: Ingestion Core")
+    try:
+        result = ingest_file(input, format)
+    except IngestionError as exc:
+        typer.echo(f"Error: {exc}", err=True)
+        raise typer.Exit(code=1) from exc
+
+    questions_path = output / "normalized.jsonl"
+    written = write_jsonl(questions_path, result.questions)
+    typer.echo(f"{written} questions -> {questions_path}")
+
+    if result.failures:
+        failures_path = output / "ingest_failures.jsonl"
+        write_jsonl(failures_path, result.failures)
+        typer.echo(
+            f"{len(result.failures)} failed records -> {failures_path}",
+            err=True,
+        )
+    if written == 0:
+        typer.echo("Error: no valid questions produced", err=True)
+        raise typer.Exit(code=1)
 
 
 @app.command()
