@@ -30,14 +30,14 @@ The **Question Metadata Engine (QME)** — a backend AI pipeline that transforms
 
 Check `docs/ROADMAP.md` and `docs/IMPLEMENTATION_ORDER.md` to determine the current step. Update this section when a milestone closes.
 
-- **Current:** M4 — Difficulty Engine (Step 4): `difficulty_v1.txt`, factor calculation (pure functions), `DifficultyEngine` stage, difficulty gold standard
-- **Closed:** M1 — Project Skeleton (Step 1); M2 — Ingestion (Step 2): JSONL/CSV/TXT parsers, normalizer, source tracker, `qme ingest` (134 tests); M3 — Taxonomy & Classification (Step 3): seed taxonomy (4 categories / 34 topics / 70 subtopics), `taxonomy_loader`, LLM gateway (Gemini free-tier default, strict structured output, headerless-429 body parsing) + prompt manager, `QuestionClassifier` — live gate `pytest -m ai_eval` = 25/25 category, 25/25 topic, 22/24 subtopic (197 tests). Docker files deferred (no Docker on this machine) until the deployment milestone.
-- **Next exit gate (M4):** `DifficultyEngine.score()` returns `DifficultyResult` (0-10 + factors + rating buckets easy 0-3.5 / medium 3.5-6.5 / hard 6.5-10) through the Protocol; deterministic factor unit tests; opt-in `ai_eval` difficulty correlation ≥ 0.8 against `tests/ai_evaluation/gold_standard/difficulty.jsonl`.
+- **Current:** M5 — Solution Engine (Step 5): `solution_v1.txt` + `solution_extract_v1.txt` prompts, `SolutionEngine` stage, `solution_validator`, solutions gold standard
+- **Closed:** M1 — Project Skeleton (Step 1); M2 — Ingestion (Step 2): JSONL/CSV/TXT parsers, normalizer, source tracker, `qme ingest` (134 tests); M3 — Taxonomy & Classification (Step 3): seed taxonomy (4 categories / 34 topics / 70 subtopics), `taxonomy_loader`, LLM gateway (Gemini free-tier default, strict structured output, headerless-429 body parsing) + prompt manager, `QuestionClassifier` — live gate `pytest -m ai_eval` = 25/25 category, 25/25 topic, 22/24 subtopic (197 tests); M4 — Difficulty Engine (Step 4): `difficulty_v1.txt` (tier-first method + few-shot calibration anchors), `difficulty_calc` pure functions, config factor weights (reasoning/steps-led after calibration; original quantitative-heavy weights capped qualitative questions below "hard"), `DifficultyEngine` stage, 25-question difficulty gold standard — live gate `pytest -m ai_eval` difficulty Pearson correlation **0.883** ≥ 0.8 (rating agreement 64%; `gemini-3.5-flash-lite` systematically under-rates hard items — known bias for the M11 eval harness) (241 tests). Docker files deferred (no Docker on this machine) until the deployment milestone.
+- **Next exit gate (M5):** `SolutionEngine.score()` returns `SolutionResult` (steps + final answer + confidence) through the Protocol; extraction and generation paths; generated/extracted answer validated against `correct_answer`; opt-in `ai_eval` solution correctness > 95% against `tests/ai_evaluation/gold_standard/solutions.jsonl`.
 
 ## Verification commands
 
 ```bash
-pytest tests -q   # all tests (197 as of M3 close; ai_eval deselected)
+pytest tests -q   # all tests (241 as of M4 close; 2 ai_eval deselected)
 ruff check src tests
 mypy
 make test         # same, via Makefile (requires GNU make; use commands above on Windows)
