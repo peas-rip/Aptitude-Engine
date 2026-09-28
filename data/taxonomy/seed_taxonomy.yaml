@@ -1,0 +1,204 @@
+# Seed taxonomy for aptitude question classification (FE-002).
+#
+# Rules:
+# - taxonomy_version bumps whenever IDs change meaning (add-only after release;
+#   never rename an ID once published — downstream data references it).
+# - IDs are stable snake_case slugs; names are display labels.
+# - Loaded/validated by src/qme/config/taxonomy_loader.py (strict schema:
+#   unknown keys are rejected, duplicate IDs anywhere are rejected).
+
+taxonomy_version: 1
+name: aptitude_seed
+
+categories:
+  - id: quantitative_aptitude
+    name: Quantitative Aptitude
+    description: Numerical and mathematical problem solving.
+    topics:
+      - id: number_system
+        name: Number System
+        subtopics:
+          - { id: divisibility_rules, name: Divisibility Rules }
+          - { id: hcf_lcm, name: HCF & LCM }
+          - { id: remainders_cyclicity, name: Remainders & Cyclicity }
+      - id: percentages
+        name: Percentages
+        subtopics:
+          - { id: basic_percentages, name: Basic Percentages }
+          - { id: percentage_change, name: Percentage Change & Successive Changes }
+      - id: profit_loss
+        name: Profit, Loss & Discount
+        subtopics:
+          - { id: profit_loss_basics, name: Profit & Loss Basics }
+          - { id: discounts, name: Discounts }
+      - id: interest
+        name: Interest
+        subtopics:
+          - { id: simple_interest, name: Simple Interest }
+          - { id: compound_interest, name: Compound Interest }
+      - id: ratio_proportion
+        name: Ratio & Proportion
+        subtopics:
+          - { id: basic_ratio, name: Basic Ratio }
+          - { id: proportion_variation, name: Proportion & Variation }
+      - id: averages
+        name: Averages
+        subtopics:
+          - { id: basic_averages, name: Basic Averages }
+          - { id: weighted_averages, name: Weighted Averages }
+      - id: time_speed_distance
+        name: Time, Speed & Distance
+        subtopics:
+          - { id: basic_speed, name: Basic Speed & Distance }
+          - { id: relative_speed, name: Relative Speed }
+          - { id: trains, name: Trains }
+      - id: time_work
+        name: Time & Work
+        subtopics:
+          - { id: work_time, name: Work & Time }
+          - { id: pipes_cisterns, name: Pipes & Cisterns }
+      - id: ages
+        name: Ages
+        subtopics:
+          - { id: basic_ages, name: Basic Ages }
+      - id: mixtures_alligations
+        name: Mixtures & Alligations
+        subtopics:
+          - { id: mixtures, name: Mixtures }
+          - { id: alligation, name: Alligation }
+      - id: algebra
+        name: Algebra
+        subtopics:
+          - { id: linear_equations, name: Linear Equations }
+          - { id: quadratic_equations, name: Quadratic Equations }
+          - { id: algebraic_identities, name: Algebraic Identities }
+      - id: geometry
+        name: Geometry
+        subtopics:
+          - { id: lines_angles, name: Lines & Angles }
+          - { id: triangles, name: Triangles }
+          - { id: circles, name: Circles }
+          - { id: coordinate_geometry, name: Coordinate Geometry }
+      - id: mensuration
+        name: Mensuration
+        subtopics:
+          - { id: plane_figures, name: Plane Figures }
+          - { id: solids_3d, name: Solids (3D) }
+      - id: permutations_probability
+        name: Permutations, Combinations & Probability
+        subtopics:
+          - { id: permutations_combinations, name: Permutations & Combinations }
+          - { id: probability, name: Probability }
+
+  - id: logical_reasoning
+    name: Logical Reasoning
+    description: Pattern, sequence, and deductive reasoning without heavy computation.
+    topics:
+      - id: number_series
+        name: Number Series
+        subtopics:
+          - { id: arithmetic_series, name: Arithmetic Series }
+          - { id: geometric_series, name: Geometric Series }
+          - { id: mixed_series, name: Mixed / Other Series }
+      - id: letter_series
+        name: Letter & Alphabet Series
+        subtopics:
+          - { id: letter_series_patterns, name: Letter Series Patterns }
+          - { id: letter_analogies, name: Letter Analogies }
+      - id: analogies
+        name: Analogies
+        subtopics:
+          - { id: verbal_analogies, name: Verbal Analogies }
+      - id: coding_decoding
+        name: Coding & Decoding
+        subtopics:
+          - { id: letter_shift, name: Letter Shift Coding }
+          - { id: pattern_codes, name: Pattern Codes }
+      - id: blood_relations
+        name: Blood Relations
+        subtopics:
+          - { id: direct_relations, name: Direct Relations }
+          - { id: family_tree, name: Family Tree Puzzles }
+      - id: direction_distance
+        name: Direction & Distance
+        subtopics:
+          - { id: basic_directions, name: Basic Directions }
+          - { id: complex_paths, name: Complex Paths }
+      - id: syllogisms
+        name: Syllogisms
+        subtopics:
+          - { id: basic_syllogisms, name: Basic Syllogisms }
+          - { id: conditional_statements, name: Conditional Statements }
+      - id: seating_arrangement
+        name: Seating Arrangement
+        subtopics:
+          - { id: linear_seating, name: Linear Seating }
+          - { id: circular_seating, name: Circular Seating }
+      - id: puzzles
+        name: Puzzles
+        subtopics:
+          - { id: scheduling, name: Scheduling Puzzles }
+      - id: calendar_clock
+        name: Calendar & Clocks
+        subtopics:
+          - { id: calendar, name: Calendar }
+          - { id: clocks, name: Clocks }
+
+  - id: verbal_ability
+    name: Verbal Ability
+    description: English language comprehension, vocabulary, and usage.
+    topics:
+      - id: reading_comprehension
+        name: Reading Comprehension
+        subtopics:
+          - { id: main_idea, name: Main Idea }
+          - { id: inference, name: Inference }
+          - { id: detail_questions, name: Detail Questions }
+          - { id: vocabulary_in_context, name: Vocabulary in Context }
+      - id: vocabulary
+        name: Vocabulary
+        subtopics:
+          - { id: synonyms_antonyms, name: Synonyms & Antonyms }
+          - { id: one_word_substitutions, name: One Word Substitutions }
+      - id: sentence_correction
+        name: Sentence Correction
+        subtopics:
+          - { id: grammar_usage, name: Grammar & Usage }
+          - { id: error_detection, name: Error Detection }
+      - id: sentence_completion
+        name: Sentence Completion
+        subtopics:
+          - { id: single_blank, name: Single Blank }
+          - { id: double_blank, name: Double Blank }
+      - id: critical_reasoning
+        name: Critical Reasoning
+        subtopics:
+          - { id: assumptions, name: Assumptions }
+          - { id: strengthen_weaken, name: Strengthen / Weaken }
+      - id: para_jumbles
+        name: Sentence Reordering
+        subtopics:
+          - { id: sentence_reordering, name: Sentence Reordering }
+
+  - id: data_interpretation
+    name: Data Interpretation
+    description: Reading and analyzing data from tables, charts, and passages.
+    topics:
+      - id: tables
+        name: Tables
+        subtopics:
+          - { id: simple_tables, name: Simple Tables }
+      - id: charts
+        name: Charts & Graphs
+        subtopics:
+          - { id: bar_chart, name: Bar Chart }
+          - { id: line_graph, name: Line Graph }
+          - { id: pie_chart, name: Pie Chart }
+      - id: venn_diagrams
+        name: Venn Diagrams
+        subtopics:
+          - { id: set_relations, name: Set Relations }
+      - id: caselets
+        name: Caselets
+        subtopics:
+          - { id: caselet_data, name: Caselet Data }

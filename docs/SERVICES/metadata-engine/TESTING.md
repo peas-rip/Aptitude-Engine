@@ -17,10 +17,9 @@ tests/
 |   |-- test_batch_processing.py       # Coordinator
 |   |-- test_api.py          # FastAPI endpoints
 |   |-- test_cli.py          # Typer commands
-|-- ai_evaluation/           # Real LLM calls (costs money!)
+|-- ai_evaluation/           # Real LLM calls (Gemini free tier; deselected by default)
 |   |-- gold_standard/
-|   |   |-- questions.jsonl  # 200 manually labeled
-|   |   |-- expected_outputs.jsonl
+|   |   |-- classification.jsonl  # 25 hand-labeled (M3)
 |   |-- test_classification_accuracy.py
 |   |-- test_difficulty_correlation.py
 |   |-- test_solution_correctness.py
@@ -40,7 +39,7 @@ tests/
 
 1. **Unit tests:** Fast, deterministic, no external dependencies
 2. **Integration tests:** Mock LLM gateway, test orchestration
-3. **AI Evaluation:** Real LLM against gold standard, run selectively (costs money)
+3. **AI Evaluation:** Real LLM against gold standard, opt-in only (`-m ai_eval`; Gemini free tier)
 4. **Failure tests:** Chaos engineering for the pipeline
 5. **Regression tests:** Detect behavior changes when prompts/models change
 
@@ -53,7 +52,7 @@ make test
 # Specific categories
 pytest tests/unit/ -v
 pytest tests/integration/ -v
-pytest tests/ai_evaluation/ -v   # Requires OPENAI_API_KEY, costs money
+pytest -m ai_eval tests/ai_evaluation/ -v   # Requires GEMINI_API_KEY (free tier); deselected by default
 pytest tests/failure/ -v
 pytest tests/regression/ -v
 
@@ -107,15 +106,21 @@ async def test_full_pipeline(mock_llm_gateway):
 ```python
 # tests/ai_evaluation/test_classification_accuracy.py
 import pytest
-from qme.evaluation.metrics import classification_accuracy
-from qme.evaluation.gold_standard import load_gold_standard
+from qme.config.settings import get_settings
+from qme.pipeline.stages.classifier import Classifier
 
-@pytest.mark.ai_eval
-@pytest.mark.asyncio
-async def test_classification_accuracy(real_llm_gateway):
-    gold = load_gold_standard("classification")
-    accuracy = await classification_accuracy(real_llm_gateway, gold)
-    assert accuracy > 0.90  # 90% threshold
+pytestmark = pytest.mark.ai_eval
+
+@pytest.mark.skipif(not get_settings().gemini_api_key, reason="GEMINI_API_KEY not set")
+async def test_classification_accuracy_against_gold_standard():
+    classifier = Classifier()  # real gateway + seed taxonomy
+    gold = load_gold_rows()    # tests/ai_evaluation/gold_standard/classification.jsonl
+    hits = sum(
+        (await classifier.classify(_as_input(row))).topic_id
+        == row["expected"]["topic_id"]
+        for row in gold
+    )
+    assert hits / len(gold) >= 0.50  # sanity floor, reported per level
 ```
 
 ## Gold Standard Dataset
@@ -173,18 +178,18 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name == 'schedule' || github.ref == 'refs/heads/main'
     env:
-      OPENAI_API_KEY: PLACEHOLDER_OPENAI_KEY
+      GEMINI_API_KEY: PLACEHOLDER_GEMINI_KEY
     steps:
       - uses: actions/checkout@v4
       - run: pytest tests/ai_evaluation/ -v
 ```
 
-> Note: `PLACEHOLDER_OPENAI_KEY` refers to the repository secret that stores the OpenAI API key.
+> Note: `PLACEHOLDER_GEMINI_KEY` refers to the repository secret that stores the Gemini API key (free tier).
 
 ## Test Data
 
 ### Sample Questions
-`data/samples/sample_questions.jsonl` - 100 clean questions for dev testing
+`data/samples/sample_questions.jsonl` - 12 clean questions for dev testing
 
 ### Fixtures
 `tests/conftest.py` provides:

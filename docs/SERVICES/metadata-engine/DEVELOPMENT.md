@@ -5,7 +5,7 @@
 ### Prerequisites
 - Python 3.11+
 - Docker & Docker Compose
-- OpenAI API key
+- Google Gemini API key (free: https://aistudio.google.com/apikey) or Groq/OpenAI key
 - Git
 
 ### Quick Start
@@ -16,7 +16,7 @@ cd aptitude-engine
 
 # Configure environment
 cp .env.example .env
-# Edit .env with your OPENAI_API_KEY
+# Edit .env with your GEMINI_API_KEY (or QME_LLM_PROVIDER=groq|openai + GROQ_API_KEY|OPENAI_API_KEY)
 
 # Start development stack
 make dev
@@ -74,9 +74,12 @@ src/qme/
 All settings in `config/settings.py` (Pydantic Settings).
 Environment variables override defaults.
 Key settings:
-- `OPENAI_API_KEY` - Required
-- `MODEL_CLASSIFIER` - Default: gpt-4o-mini
-- `MODEL_SOLUTION` - Default: gpt-4o
+- `QME_LLM_PROVIDER` - Default: `gemini` (also `groq` | `openai` | `custom`)
+- `GEMINI_API_KEY` - Required when provider=gemini (validated at call time)
+- `GROQ_API_KEY` - Required when provider=groq
+- `OPENAI_API_KEY` - Required when provider=openai
+- `MODEL_CLASSIFIER` - Default: gemini-3.5-flash-lite (Gemini free tier)
+- `MODEL_SOLUTION` - Default: gemini-3.5-flash-lite
 - `CHECKPOINT_INTERVAL` - Default: 10
 - `CONFIDENCE_THRESHOLDS` - Per-stage thresholds
 

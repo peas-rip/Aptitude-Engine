@@ -13,6 +13,7 @@ dependencies = [
     "fastapi>=0.110",
     "pydantic>=2.6",
     "pydantic-settings>=2.2",
+    "pyyaml>=6.0",
     "typer>=0.12",
     "uvicorn[standard]>=0.29",
     "structlog>=24.1",
@@ -28,6 +29,7 @@ dev = [
     "pytest-cov>=5.0",
     "ruff>=0.5",
     "mypy>=1.10",
+    "types-PyYAML>=6.0",
 ]
 
 [project.scripts]
@@ -82,10 +84,10 @@ testpaths = ["tests"]
 pythonpath = ["src"]
 asyncio_mode = "strict"
 markers = [
-    "ai_eval: tests that call real LLM APIs (cost money; opt-in)",
+    "ai_eval: tests that call real LLM APIs (rate-limited; deselected by default, run with -m ai_eval)",
     "slow: long-running tests",
 ]
-addopts = "-q --strict-markers"
+addopts = "-q --strict-markers -m 'not ai_eval'"
 filterwarnings = [
     # BatchConfig.validate is required by API_CONTRACTS 3.2; it shadows
     # BaseModel.validate (unused in v2) — keep the contract name.

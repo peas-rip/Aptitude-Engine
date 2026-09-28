@@ -141,27 +141,52 @@
 
 ## LLM Provider Evaluation
 
-### Selected: OpenAI (GPT-4o, GPT-4o-mini) - User Confirmed
+### Selected: Google Gemini free tier (default) + Groq (free alternative) + OpenAI (optional paid) - User Confirmed (M3, Sept 2026)
+
+> Amended twice: first from "OpenAI only" to Groq, then to Gemini after the
+> Groq key expired and re-provisioning failed. The gateway is
+> provider-pluggable (`QME_LLM_PROVIDER=gemini|groq|openai|custom`), so swapping
+> is a config change, not code. **Structured-output-only is the hard
+> constraint:** the default must support `response_format` JSON Schema. Gemini's
+> OpenAI-compatible endpoint accepts `json_schema` + `strict: true` and returns
+> schema-conformant JSON (validated live in the M3 gate, including nested
+> `$defs`/`$ref` schemas needed by later milestones).
+
+**Why Gemini free tier as default (probed live, Sept 2026):**
+- Free, no credit card: key from aistudio.google.com
+- OpenAI-compatible endpoint (`/v1beta/openai/`) → same `openai` SDK, `base_url` swap
+- Strict `json_schema` accepted; nested `$defs`/`$ref`/nullable `anyOf` all validated
+- Highest free volume of the free options tested: `gemini-3.5-flash-lite` answered
+  10/10 burst calls with zero errors; `gemini-3.8-flash` is capped at 5 req/min
+- Quota 429s carry **no `retry-after` header** — the delay rides the error body
+  (`RetryInfo.retryDelay`, "Please retry in 33s"); the gateway parses both
+- Caveats: `gemini-2.5-flash` is retired for new users (use 3.x); occasional
+  503 "high demand" (gateway retries 5xx with backoff); free-tier prompts may
+  be used by Google to improve products outside UK/CH/EEA
 
 **Model Strategy:**
 | Task | Model | Rationale |
 |------|-------|-----------|
-| Topic/Subtopic Classification | GPT-4o-mini | Fast, cheap, structured output reliable |
-| Difficulty Scoring | GPT-4o-mini | Structured reasoning sufficient |
-| Solution Generation | GPT-4o | Complex reasoning, multi-step math |
-| Formula Extraction | GPT-4o-mini | Pattern recognition, structured output |
-| Validation (LLM-assisted) | GPT-4o | Need strong reasoning for verification |
+| Topic/Subtopic Classification | gemini-3.5-flash-lite | Strict structured output, highest free RPM; M3 eval = 100% category/topic |
+| Difficulty Scoring | gemini-3.5-flash-lite | Structured reasoning sufficient |
+| Solution Generation | gemini-3.5-flash-lite (→ gemini-3.8-flash if quality gaps) | Multi-step math; revisit at Step 5 eval |
+| Formula Extraction | gemini-3.5-flash-lite | Pattern recognition, structured output |
+| Validation (LLM-assisted) | gemini-3.5-flash-lite (→ gemini-3.8-flash if needed) | Paid fallback (OpenAI) available |
 
-**Cost Estimate (10K questions):**
-- Classification (4o-mini): ~$0.15/1K tokens x ~500 tokens x 10K = ~$7.50
-- Solution Gen (4o): ~$2.50/1K tokens x ~1K tokens x 10K = ~$250
-- Formula Extraction (4o-mini): ~$0.15/1K tokens x ~300 tokens x 10K = ~$4.50
-- **Total: ~$260-300 for 10K questions**
+**Cost:** $0 during development/evaluation on the free tier. Paid fallback
+(OpenAI GPT-4o / 4o-mini) remains configured for when free-tier volume is not
+enough (est. ~$260-300 per 10K questions) or when evals show quality gaps.
+
+**Volume planning:** flash-lite measured ≥10 req/min free (per-model quota);
+Gemini rate limits are per-model per-minute, so large batches pace via the
+gateway's parsed 429 delay (cap 60s). Adding another OpenAI-compatible
+provider (Groq, Cerebras, ...) stays config-only.
 
 **Optimization:**
-- Batch API (50% discount) for non-urgent processing
-- Cache identical prompts
-- Use structured outputs to avoid retries
+- Space batch requests to stay under the per-model per-minute quota (gateway handles 429 waits automatically)
+- Use strict structured outputs to avoid validation retries
+- `gemini-3.8-flash` for hard stages, `flash-lite` for volume stages — set per
+  stage via `MODEL_*` env vars / `BatchConfig.model_overrides`
 
 ---
 
@@ -189,7 +214,7 @@
 | Queue | None (Defer) | Deferred |
 | Search | None (Defer) | Deferred |
 | Deployment | Docker Compose on VPS | **Pending Approval** |
-| LLM Provider | OpenAI (4o, 4o-mini) | Confirmed |
+| LLM Provider | Google Gemini free tier (default) + Groq (free alt) + OpenAI (optional paid) | Confirmed (M3) |
 | Embeddings | OpenAI text-embedding-3-small | Future |
 
 ---

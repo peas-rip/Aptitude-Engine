@@ -69,14 +69,17 @@
 ### 6.1 Technical Constraints
 - **Language:** Python 3.11+
 - **Framework:** FastAPI (async), Pydantic v2
-- **LLM:** OpenAI GPT-4o (complex) / GPT-4o-mini (fast/cheap)
+- **LLM:** Provider-pluggable gateway; default **Google Gemini free tier**
+  (`gemini-3.5-flash-lite`, strict structured output), Groq free alternative,
+  optional OpenAI paid fallback (`QME_LLM_PROVIDER=gemini|groq|openai|custom`)
 - **Output:** JSONL (V1), PostgreSQL + pgvector (V2+)
 - **Deployment:** Docker Compose on VPS
 - **No:** Redis, Queue, Kubernetes, Admin UI (V1)
 
 ### 6.2 AI Constraints
 - **Structured outputs mandatory:** Never parse free-form LLM text
-- **Model routing:** 4o-mini for classification/difficulty/formula; 4o for solution/validation
+- **Model routing:** Per-stage models via `MODEL_*` env vars; defaults all Gemini
+  `gemini-3.5-flash-lite` (strict schema); stage-level overrides in `BatchConfig.model_overrides`
 - **Confidence thresholds:** Configurable per stage, default 0.7-0.8
 - **Prompt versioning:** Every prompt hashed, stored with results
 - **Deterministic validation:** Use Python/SymPy where possible (V2), LLM-assisted V1
@@ -131,7 +134,7 @@
 | 7-layer validation | Defense in depth; different layers catch different errors |
 | Defer deterministic math | V1 speed; add SymPy in V2 when validation gaps measured |
 | JSONL output | Streamable, line-delimited, easy for downstream consumers |
-| GPT-4o-mini for classification | 10x cheaper, sufficient for structured classification |
+| Gemini free tier default | $0 dev/eval; strict structured output; Groq/OpenAI fallbacks stay one config change |
 | Taxonomy in YAML + DB | Human-editable seed, versioned in DB, hot-reloadable |
 
 ## 11. Getting Started (For Implementation Agent)
@@ -147,7 +150,8 @@ pip install -e ".[dev]"
 
 # Configure
 cp .env.example .env
-# Edit .env with OPENAI_API_KEY
+# Edit .env: GEMINI_API_KEY (free tier: https://aistudio.google.com/apikey, no card)
+# or set QME_LLM_PROVIDER=groq|openai + GROQ_API_KEY|OPENAI_API_KEY
 
 # Run dev
 make dev  # Starts docker-compose.dev.yml
@@ -200,7 +204,7 @@ pytest tests/ai_evaluation/test_classification_accuracy.py -v
 
 | Technique | Implementation |
 |-----------|----------------|
-| Model routing | 4o-mini for 4/5 stages, 4o only for solution/validation |
+| Model routing | Per-stage `MODEL_*` config (defaults: Gemini free tier, $0) |
 | Structured outputs | Eliminate retries from parsing failures |
 | Batch API | 50% discount for non-urgent batches (V2) |
 | Prompt caching | Exact prompt hash cache (V2) |
