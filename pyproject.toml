@@ -86,6 +86,11 @@ markers = [
     "slow: long-running tests",
 ]
 addopts = "-q --strict-markers"
+filterwarnings = [
+    # BatchConfig.validate is required by API_CONTRACTS 3.2; it shadows
+    # BaseModel.validate (unused in v2) — keep the contract name.
+    'ignore:Field name "validate" in "BatchConfig" shadows an attribute:UserWarning',
+]
 
 # ---------------------------------------------------------------------------
 # Coverage
