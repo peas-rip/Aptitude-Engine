@@ -30,14 +30,18 @@ The **Question Metadata Engine (QME)** — a backend AI pipeline that transforms
 
 Check `docs/ROADMAP.md` and `docs/IMPLEMENTATION_ORDER.md` to determine the current step. Update this section when a milestone closes.
 
-- **Current:** M1 — Project Skeleton (Step 1)
-- **Exit gate:** `make test` green, `make lint` clean, `qme --help` works, `GET /health` returns 200
+- **Current:** M2 — Ingestion (Step 2): JSONL/CSV/TXT parsers, normalizer, source tracker, `qme ingest`
+- **Closed:** M1 — Project Skeleton (Step 1): 35 tests, ruff+mypy clean, `qme --help` + `GET /api/v1/health` verified. Docker files deferred (no Docker on this machine) until the deployment milestone.
+- **Next exit gate (M2):** `qme ingest --input data/samples/sample_questions.jsonl --output data/output` produces valid NormalizedQuestion JSONL; parser + normalizer unit tests pass.
 
 ## Verification commands
 
 ```bash
-make test    # pytest (unit + integration)
-make lint    # ruff + mypy
-make run-api # uvicorn dev server
-qme --help   # CLI smoke test
+pytest tests -q   # all tests (35 as of M1 close)
+ruff check src tests
+mypy
+make test         # same, via Makefile (requires GNU make; use commands above on Windows)
+make run-api      # uvicorn dev server
+qme --help        # CLI smoke test
+curl http://localhost:8000/api/v1/health
 ```
