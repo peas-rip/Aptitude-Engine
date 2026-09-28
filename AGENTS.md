@@ -30,14 +30,14 @@ The **Question Metadata Engine (QME)** — a backend AI pipeline that transforms
 
 Check `docs/ROADMAP.md` and `docs/IMPLEMENTATION_ORDER.md` to determine the current step. Update this section when a milestone closes.
 
-- **Current:** M2 — Ingestion (Step 2): JSONL/CSV/TXT parsers, normalizer, source tracker, `qme ingest`
-- **Closed:** M1 — Project Skeleton (Step 1): 35 tests, ruff+mypy clean, `qme --help` + `GET /api/v1/health` verified. Docker files deferred (no Docker on this machine) until the deployment milestone.
-- **Next exit gate (M2):** `qme ingest --input data/samples/sample_questions.jsonl --output data/output` produces valid NormalizedQuestion JSONL; parser + normalizer unit tests pass.
+- **Current:** M3 — Taxonomy & Classification (Step 3): seed taxonomy, `taxonomy_loader`, LLM gateway + structured output + prompt manager, `QuestionClassifier` stage
+- **Closed:** M1 — Project Skeleton (Step 1); M2 — Ingestion (Step 2): JSONL/CSV/TXT parsers, normalizer, source tracker, `qme ingest` (134 tests). Docker files deferred (no Docker on this machine) until the deployment milestone.
+- **Next exit gate (M3):** `QuestionClassifier.classify()` returns a `ClassificationResult` through enforced structured output; unit tests pass with a mocked gateway; opt-in `ai_eval` gold-standard classification eval runs against `tests/ai_evaluation/gold_standard/`.
 
 ## Verification commands
 
 ```bash
-pytest tests -q   # all tests (35 as of M1 close)
+pytest tests -q   # all tests (134 as of M2 close)
 ruff check src tests
 mypy
 make test         # same, via Makefile (requires GNU make; use commands above on Windows)
