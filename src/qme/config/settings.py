@@ -54,6 +54,26 @@ class Settings(BaseSettings):
     max_retries: int = 3
     retry_base_delay_sec: float = 1.0
 
+    # Difficulty methodology v1 (FE-003). Factor weights live in config and
+    # are NEVER taken from the LLM; must sum to 1.0 (validated at stage init).
+    # Buckets: easy <= easy_max < medium <= medium_max < hard.
+    # Calibrated 2026-09: reasoning/steps-led weights so qualitative questions
+    # (syllogisms, puzzles) are not mathematically capped below "hard" by the
+    # calculation/formula pair.
+    difficulty_factor_weights: dict[str, float] = {
+        "concept_count": 0.15,
+        "reasoning_complexity": 0.30,
+        "calculation_complexity": 0.10,
+        "steps": 0.20,
+        "ambiguity": 0.15,
+        "formula_complexity": 0.10,
+    }
+    difficulty_easy_max: float = 3.5
+    difficulty_medium_max: float = 6.5
+    # estimated_time_sec = base + time_per_point * score  (30s .. 150s at 0..10)
+    difficulty_base_time_sec: int = 30
+    difficulty_time_per_point_sec: int = 12
+
     # Batch processing
     checkpoint_interval: int = 10
 
