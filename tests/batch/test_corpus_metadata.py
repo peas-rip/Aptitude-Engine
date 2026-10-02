@@ -27,7 +27,7 @@ import json
 import logging
 import os
 import time
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 import pytest
@@ -133,7 +133,7 @@ async def test_run_corpus_metadata_batch() -> None:
                     "difficulty_model": settings.model_difficulty,
                     "difficulty_prompt": "difficulty_v1",
                     "difficulty_methodology": None,
-                    "processed_at": datetime.now(timezone.utc).isoformat(),
+                    "processed_at": datetime.now(UTC).isoformat(),
                 },
             }
             try:
