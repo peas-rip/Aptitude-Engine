@@ -57,3 +57,6 @@ logs/
 
 # Jupyter
 .ipynb_checkpoints/
+
+# Book source data (never commit; input corpus)
+data/input/
