@@ -1,0 +1,5 @@
+# Railpack (Railway) pip entrypoint: without this file no package manager
+# matches and dependencies are never installed. The single requirement is the
+# project itself - all dependencies live in pyproject.toml (single source of
+# truth), so `pip install -r requirements.txt` installs qme + its deps.
+.

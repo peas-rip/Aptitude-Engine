@@ -83,9 +83,11 @@ all model overrides). See `AGENTS.md` for agent-facing rules and milestone state
 ## Deployment
 
 The Test & Practice API (`API_CONTRACTS` §1.7) targets **Railway** (any
-git-based PaaS works): push to `main` → Railpack builds `pyproject.toml`
-(zero config; the `Procfile` supplies the start command) → service boots.
-The three bank files in `data/input/` ship with the repo.
+git-based PaaS works): push to `main` → Railpack builds (Python pinned by
+`.python-version`; `requirements.txt` points pip at the project so all
+dependencies resolve from `pyproject.toml`; the `Procfile` supplies the start
+command) → service boots. The three bank files in `data/input/` ship with the
+repo.
 
 **Service configuration (Railway dashboard):**
 
