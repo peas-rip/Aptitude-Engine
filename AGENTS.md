@@ -30,14 +30,15 @@ The **Question Metadata Engine (QME)** — a backend AI pipeline that transforms
 
 Check `docs/ROADMAP.md` and `docs/IMPLEMENTATION_ORDER.md` to determine the current step. Update this section when a milestone closes.
 
-- **Current:** M5 — Solution Engine (Step 5): `solution_v1.txt` + `solution_extract_v1.txt` prompts, `SolutionEngine` stage, `solution_validator`, solutions gold standard
+- **Active work:** Test & Practice Agent (`src/qme/testgen/`, `qme testgen` / `qme practice`) — deterministic test/practice assembly from the external agent's bank in `data/input/` (`book_questions_agent_ready.jsonl`, `aptitude_agent_knowledge.json`, `aptitude_test_blueprint.json` = the upstream contract). Contract mismatch must hard-stop with a field report. See `docs/AGENT_SUMMARY.md`.
+- **QME pipeline: PARKED at M4 close** (owner decision, 2026-10-02). Question enrichment is delivered by the external agent (17-chapter taxonomy, heuristic difficulty, answer-key-anchored solutions); its known gap — genuine step-by-step solutions with answer-key validation — is the resume point (**M5 Solution Engine**) if the pipeline is unparked. Interim corpus runner: `tests/batch/` (superseded, kept). Source data in `data/input/` is gitignored. General PDF/DOCX parsers, PostgreSQL, eval harness, polish: deferred by owner decision.
 - **Closed:** M1 — Project Skeleton (Step 1); M2 — Ingestion (Step 2): JSONL/CSV/TXT parsers, normalizer, source tracker, `qme ingest` (134 tests); M3 — Taxonomy & Classification (Step 3): seed taxonomy (4 categories / 34 topics / 70 subtopics), `taxonomy_loader`, LLM gateway (Gemini free-tier default, strict structured output, headerless-429 body parsing) + prompt manager, `QuestionClassifier` — live gate `pytest -m ai_eval` = 25/25 category, 25/25 topic, 22/24 subtopic (197 tests); M4 — Difficulty Engine (Step 4): `difficulty_v1.txt` (tier-first method + few-shot calibration anchors), `difficulty_calc` pure functions, config factor weights (reasoning/steps-led after calibration; original quantitative-heavy weights capped qualitative questions below "hard"), `DifficultyEngine` stage, 25-question difficulty gold standard — live gate `pytest -m ai_eval` difficulty Pearson correlation **0.883** ≥ 0.8 (rating agreement 64%; `gemini-3.5-flash-lite` systematically under-rates hard items — known bias for the M11 eval harness) (241 tests). Docker files deferred (no Docker on this machine) until the deployment milestone.
-- **Next exit gate (M5):** `SolutionEngine.score()` returns `SolutionResult` (steps + final answer + confidence) through the Protocol; extraction and generation paths; generated/extracted answer validated against `correct_answer`; opt-in `ai_eval` solution correctness > 95% against `tests/ai_evaluation/gold_standard/solutions.jsonl`.
+- **Resume gate if the pipeline is unparked (M5 Solution Engine):** `SolutionEngine.score()` returns `SolutionResult` (steps + final answer + confidence) through the Protocol; extraction and generation paths; generated/extracted answer validated against `correct_answer`; opt-in `ai_eval` solution correctness > 95% against `tests/ai_evaluation/gold_standard/solutions.jsonl`.
 
 ## Verification commands
 
 ```bash
-pytest tests -q   # all tests (241 as of M4 close; 2 ai_eval deselected)
+pytest tests -q   # offline tests (241 as of repivot; 3 ai_eval deselected)
 ruff check src tests
 mypy
 make test         # same, via Makefile (requires GNU make; use commands above on Windows)
