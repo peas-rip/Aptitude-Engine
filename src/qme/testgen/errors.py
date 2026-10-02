@@ -28,4 +28,12 @@ class ContractError(TestGenError):
 
 
 class SelectionError(TestGenError):
-    """A test/practice request cannot be satisfied against the bank."""
+    """A test/practice request cannot be satisfied against the bank.
+
+    ``details`` is machine-readable context for the API error envelope
+    (API_CONTRACTS 1.7): available filter values or the failed filters.
+    """
+
+    def __init__(self, message: str, details: dict | None = None) -> None:
+        self.details = details or {}
+        super().__init__(message)

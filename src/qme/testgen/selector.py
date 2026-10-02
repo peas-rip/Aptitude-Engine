@@ -39,22 +39,27 @@ def _matches(q: BankQuestion, s: Selection) -> bool:
     return not (s.page_max is not None and (q.source.page or 0) > s.page_max)
 
 
-def _report_unknown_filters(bank: Bank, s: Selection) -> list[str]:
+def _report_unknown_filters(bank: Bank, s: Selection) -> tuple[list[str], dict]:
     issues: list[str] = []
+    available: dict[str, list[str]] = {}
     if s.chapter is not None and s.chapter not in bank.chapters:
         issues.append(f"chapter {s.chapter!r} not in bank (available: {bank.chapters})")
+        available["chapters"] = bank.chapters
     if s.topic is not None and s.topic not in bank.topics:
         issues.append(f"topic {s.topic!r} not in bank (available: {bank.topics})")
+        available["topics"] = bank.topics
     if s.difficulty is not None and s.difficulty not in bank.difficulties:
         issues.append(
             f"difficulty {s.difficulty!r} not in bank (available: {bank.difficulties})"
         )
+        available["difficulties"] = bank.difficulties
     if not issues:
         issues.append(
             f"no question matches filters {s.filter_summary()!r} "
             f"across {len(bank.questions)} questions"
         )
-    return issues
+        return issues, {"filters": s.filter_summary(), "total_questions": len(bank.questions)}
+    return issues, {"available": available}
 
 
 def select(
@@ -68,9 +73,10 @@ def select(
     exclude = exclude or set()
     matching = [q for q in bank.questions if _matches(q, selection)]
     if not matching:
+        issues, details = _report_unknown_filters(bank, selection)
         raise SelectionError(
-            f"selection #{selection_index} cannot be satisfied: "
-            + "; ".join(_report_unknown_filters(bank, selection))
+            f"selection #{selection_index} cannot be satisfied: " + "; ".join(issues),
+            details,
         )
 
     eligible = [q for q in matching if q.question_id not in exclude]

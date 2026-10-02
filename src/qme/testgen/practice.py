@@ -56,7 +56,8 @@ def generate_practice(bank: Bank, request: PracticeRequest) -> PracticeSet:
     ]
     if not candidates:
         raise SelectionError(
-            f"practice request matches no questions: {selection.filter_summary()!r}"
+            f"practice request matches no questions: {selection.filter_summary()!r}",
+            {"filters": selection.filter_summary()},
         )
 
     if len(candidates) > request.count:

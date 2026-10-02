@@ -126,6 +126,70 @@ GET /api/v1/health
 GET /api/v1/metrics
 ```
 
+### 1.7 Testgen Endpoints (Test & Practice Agent)
+
+Deterministic test/practice assembly from the blueprint bank. No LLM calls.
+All endpoints below require the `X-API-Key` header except `/api/v1/health`.
+
+**Authentication:** header `X-API-Key: <QME_API_KEY>`. Missing/wrong key →
+`401` with error code `UNAUTHORIZED`. The key is read from the server
+environment only; requests never carry file paths (the blueprint path is
+server configuration, `QME_BLUEPRINT_PATH`).
+
+```
+GET /api/v1/bank/meta
+POST /api/v1/tests
+POST /api/v1/practice
+```
+
+**GET /api/v1/bank/meta** — discovery for callers building requests.
+
+**Response 200:**
+```json
+{
+  "chapters": ["Average", "..."],
+  "topics": ["Average / Replacement Average", "..."],
+  "difficulties": ["easy", "hard", "medium"],
+  "question_count": 1310,
+  "buckets": {"<chapter>": {"<topic>": {"<difficulty>": 12}}},
+  "contract": { /* blueprint test_generation_contract verbatim */ }
+}
+```
+
+**POST /api/v1/tests** — request body is the `TestRequest` model from
+`qme.testgen.schemas` (selections with count + optional chapter, topic,
+difficulty, question_type, skills, page_min/page_max; seed; title; test_id;
+include_solutions).
+
+**Response 200:** the `GeneratedTest` model verbatim — fields
+`test_id`, `title`, `generated_at`, `contract_source`, `selections_applied`,
+`selection_rules_applied`, `questions`, `answer_key`, `coverage`, `timing`,
+`shortages`, `notes`. Questions are byte-for-byte the bank records (never
+altered).
+
+**POST /api/v1/practice** — request body is the `PracticeRequest` model
+(count, chapter/topic/difficulty, mode `progressive|mixed`, seed, title,
+include_knowledge).
+
+**Response 200:** the `PracticeSet` model verbatim — `practice_id`, `mode`,
+`questions` (ordered), `coverage`, `timing`, `shortages`, `topic_knowledge`,
+`chapter_formula_summary`.
+
+**Status codes:**
+
+| Condition | Status | error.code |
+|---|---|---|
+| Missing/wrong `X-API-Key` | 401 | `UNAUTHORIZED` |
+| Body fails schema validation | 422 | `VALIDATION_ERROR` |
+| `SelectionError` (unknown/empty filters) | 422 | `INVALID_INPUT` — `details` lists available chapters/topics/difficulties |
+| Bank broken/missing (`ContractError`) | 503 | `SERVICE_UNAVAILABLE` — `details.issues` is the contract field report |
+
+`UNAUTHORIZED` and `SERVICE_UNAVAILABLE` are extensions to the §4 error-code
+enum introduced by this section. Every error body follows the §4 envelope and
+carries a per-request `request_id`. Responses are stateless JSON — the API
+never writes files (use the `qme testgen` / `qme practice` CLI commands for
+file output).
+
 ## 2. Internal Module Interfaces (Python Protocols)
 
 ### 2.1 QuestionClassifier
@@ -315,7 +379,7 @@ class BatchConfig(BaseModel):
 ```json
 {
   "error": {
-    "code": "VALIDATION_ERROR|PROCESSING_ERROR|RATE_LIMITED|INVALID_INPUT",
+    "code": "VALIDATION_ERROR|PROCESSING_ERROR|RATE_LIMITED|INVALID_INPUT|UNAUTHORIZED|SERVICE_UNAVAILABLE",
     "message": "Human-readable description",
     "details": { /* field-specific errors */ },
     "request_id": "uuid"

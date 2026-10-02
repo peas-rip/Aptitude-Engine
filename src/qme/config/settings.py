@@ -77,6 +77,13 @@ class Settings(BaseSettings):
     # Batch processing
     checkpoint_interval: int = 10
 
+    # Test & Practice Agent API (API_CONTRACTS 1.7)
+    # qme_blueprint_path -> env QME_BLUEPRINT_PATH (server-side only; never
+    # accepted from request bodies). qme_api_key -> env QME_API_KEY; required
+    # when ENVIRONMENT=production (enforced at app creation).
+    qme_blueprint_path: Path = Path("./data/input/aptitude_test_blueprint.json")
+    qme_api_key: str = ""
+
     # Directories
     input_dir: Path = Path("./data/input")
     output_dir: Path = Path("./data/output")

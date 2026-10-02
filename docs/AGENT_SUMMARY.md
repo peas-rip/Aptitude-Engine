@@ -152,7 +152,24 @@ they are validated on every load.
 
 ## APIs
 
-CLI only (Typer, part of the existing `qme` app):
+HTTP (FastAPI, API_CONTRACTS §1.7) — stateless JSON, `X-API-Key` required
+except on health:
+
+```
+GET  /api/v1/health        (open; PaaS health check)
+GET  /api/v1/bank/meta     chapters/topics/difficulties/buckets/contract
+POST /api/v1/tests         body TestRequest    -> GeneratedTest
+POST /api/v1/practice      body PracticeRequest -> PracticeSet
+```
+
+Errors follow the §4 envelope (`{error:{code,message,details,request_id}}`):
+401 `UNAUTHORIZED`, 422 `VALIDATION_ERROR`/`INVALID_INPUT`, 503
+`SERVICE_UNAVAILABLE` (broken bank, full contract report in `details.issues`).
+The blueprint path is server config only (`QME_BLUEPRINT_PATH`); the bank is
+mtime-cached so regenerated files are picked up without restart; the app
+refuses to boot with `ENVIRONMENT=production` and no `QME_API_KEY`.
+
+CLI (Typer, part of the existing `qme` app):
 
 - `qme testgen --blueprint <path> --output <dir> [--count --chapter
   --topic --difficulty --seed --test-id --title --format]`
