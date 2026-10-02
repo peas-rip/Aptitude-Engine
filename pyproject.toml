@@ -92,6 +92,8 @@ filterwarnings = [
     # BatchConfig.validate is required by API_CONTRACTS 3.2; it shadows
     # BaseModel.validate (unused in v2) — keep the contract name.
     'ignore:Field name "validate" in "BatchConfig" shadows an attribute:UserWarning',
+    # TestRequest is the Testgen request model, not a pytest test class.
+    "ignore:cannot collect test class 'TestRequest':pytest.PytestCollectionWarning",
 ]
 
 # ---------------------------------------------------------------------------
