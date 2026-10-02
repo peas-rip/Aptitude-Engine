@@ -1,0 +1,180 @@
+{
+  "schema_version": "1.0",
+  "question_bank": "book_questions_agent_ready.jsonl",
+  "knowledge_bank": "aptitude_agent_knowledge.json",
+  "test_generation_contract": {
+    "required_filters": [
+      "chapter",
+      "topic",
+      "difficulty"
+    ],
+    "optional_filters": [
+      "question_type",
+      "skills",
+      "source.page"
+    ],
+    "selection_rules": [
+      "Prefer unique question_id per test.",
+      "Respect requested chapter/topic/difficulty quotas.",
+      "If a requested bucket has fewer questions than requested, return the available count and report shortage.",
+      "Do not alter question_text, options, or correct_answer when generating a source-faithful test.",
+      "Use knowledge_bank formulas/short_tricks to generate explanations or new questions only when explicitly requested."
+    ],
+    "output_fields": [
+      "test_id",
+      "questions",
+      "answer_key",
+      "coverage",
+      "timing"
+    ]
+  },
+  "buckets": {
+    "Algebra & Number Patterns": {
+      "Linear Equations": {
+        "easy": 52
+      },
+      "Number Series": {
+        "easy": 46
+      }
+    },
+    "Average": {
+      "Average / Replacement Average": {
+        "medium": 9
+      }
+    },
+    "Basic Arithmetic": {
+      "Addition & Subtraction": {
+        "easy": 27
+      },
+      "Division": {
+        "easy": 38
+      },
+      "General Arithmetic": {
+        "easy": 24
+      },
+      "Multiplication": {
+        "easy": 60
+      },
+      "Squares & Roots": {
+        "easy": 10
+      }
+    },
+    "Data Interpretation": {
+      "Tables, Graphs & Percentages": {
+        "medium": 25,
+        "easy": 2
+      }
+    },
+    "General Quantitative Aptitude": {
+      "Mixed Arithmetic": {
+        "medium": 1
+      }
+    },
+    "Geometry & Mensuration": {
+      "Area & Perimeter": {
+        "easy": 71,
+        "medium": 3
+      },
+      "Volume & Surface Area": {
+        "easy": 77,
+        "medium": 2
+      }
+    },
+    "Interest": {
+      "Compound Interest": {
+        "medium": 19,
+        "easy": 2,
+        "hard": 6
+      },
+      "Simple Interest": {
+        "easy": 13,
+        "medium": 4
+      }
+    },
+    "Number System": {
+      "HCF & LCM": {
+        "easy": 51
+      },
+      "Primes, Factors & Remainders": {
+        "easy": 23
+      }
+    },
+    "Partnership": {
+      "Capital–Time Profit Sharing": {
+        "medium": 1,
+        "hard": 49
+      }
+    },
+    "Percentage, Profit & Loss": {
+      "Percentage": {
+        "easy": 26,
+        "medium": 19
+      },
+      "Profit, Loss & Discount": {
+        "medium": 52,
+        "easy": 26
+      }
+    },
+    "Permutation & Combination": {
+      "Combinations / Selection": {
+        "easy": 3,
+        "hard": 12,
+        "medium": 6
+      },
+      "Permutations / Arrangement": {
+        "easy": 5,
+        "medium": 20
+      },
+      "Permutations with Repeated Letters": {
+        "easy": 1
+      }
+    },
+    "Probability": {
+      "Classical Probability": {
+        "medium": 35,
+        "hard": 16,
+        "easy": 2
+      }
+    },
+    "Problems on Ages": {
+      "Age Ratios / Equations": {
+        "easy": 28,
+        "medium": 97
+      }
+    },
+    "Ratio, Proportion & Mixture": {
+      "Compound Ratios": {
+        "easy": 9
+      },
+      "Mixture / Replacement": {
+        "medium": 3,
+        "hard": 66
+      },
+      "Ratio / Proportion": {
+        "medium": 19,
+        "easy": 1
+      }
+    },
+    "Simplification & Approximation": {
+      "Approximation": {
+        "easy": 49
+      },
+      "Simplification / Arithmetic Operations": {
+        "easy": 64,
+        "medium": 20
+      }
+    },
+    "Time & Work": {
+      "Work Rate / Combined Work": {
+        "medium": 7,
+        "hard": 48
+      }
+    },
+    "Time, Speed & Distance": {
+      "Speed–Time–Distance": {
+        "easy": 57,
+        "medium": 4
+      }
+    }
+  }
+}

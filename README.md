@@ -23,7 +23,8 @@ Quality gates on `main`: **301 offline tests passing**, `ruff check src tests` c
 ### Current work
 
 - **Question enrichment is delivered externally.** An existing agent produced the
-  active deliverables in `data/input/` (gitignored source data):
+  active deliverables in `data/input/` (the three contract files below are
+  tracked so git-based deploys ship them; raw book sources stay ignored):
   - `book_questions_agent_ready.jsonl` — 1,310 questions with chapter/topic/difficulty labels, agent metadata, answer-key-anchored solutions
   - `aptitude_agent_knowledge.json` — 17-chapter knowledge bank (formulas, short tricks, web sources)
   - `aptitude_test_blueprint.json` — test-generation contract (filters, selection rules, bucket counts, output fields)
@@ -56,7 +57,7 @@ src/qme/
   api/  cli.py  # FastAPI app, Typer CLI
 tests/          # unit, integration, failure, regression, batch, ai_evaluation
 docs/           # architecture, contracts, feature specs, AGENT_SUMMARY.md
-data/           # inputs (gitignored), taxonomy seed, outputs
+data/           # upstream bank (3 contract files tracked; raw sources & outputs ignored)
 ```
 
 ## Running
@@ -70,7 +71,7 @@ mypy
 
 qme --help                 # CLI
 qme ingest --input data/samples/sample_questions.jsonl --output data/output/run1
-uvicorn qme.api.main:app --port 8000   # or: make run-api
+uvicorn qme.main:app --port 8000   # or: make run-api
 
 # live evals (needs GEMINI_API_KEY in .env)
 pytest -m ai_eval
@@ -78,3 +79,36 @@ pytest -m ai_eval
 
 Provider: Gemini free tier by default (`.env` carries the key; `.env.example` lists
 all model overrides). See `AGENTS.md` for agent-facing rules and milestone state.
+
+## Deployment
+
+The Test & Practice API (`API_CONTRACTS` §1.7) targets **Railway** (any
+git-based PaaS works): push to `main` → Nixpacks builds `pyproject.toml` →
+service boots. The three bank files in `data/input/` ship with the repo.
+
+**Service configuration (Railway dashboard):**
+
+| Setting | Value |
+|---|---|
+| Start command | `uvicorn qme.main:app --host 0.0.0.0 --port $PORT` |
+| Health check path | `/api/v1/health` (open, keyless) |
+| `ENVIRONMENT` | `production` (app refuses to boot without a key) |
+| `QME_API_KEY` | `python -c "import secrets; print(secrets.token_urlsafe(32))"` |
+| `QME_BLUEPRINT_PATH` | optional — defaults to `data/input/aptitude_test_blueprint.json` |
+
+**Consumer runbook:**
+
+```bash
+BASE=https://<app>.up.railway.app
+curl $BASE/api/v1/health                                  # 200, no key
+curl -H "X-API-Key: $QME_API_KEY" $BASE/api/v1/bank/meta  # discovery
+curl -X POST -H "X-API-Key: $QME_API_KEY" -H 'Content-Type: application/json' \
+  -d '{"seed":42,"selections":[{"count":20,"difficulty":"hard"}]}' \
+  $BASE/api/v1/tests                                      # 200 GeneratedTest
+```
+
+Errors follow `API_CONTRACTS` §4: 401 `UNAUTHORIZED` (missing/wrong key),
+422 `VALIDATION_ERROR`/`INVALID_INPUT` (`details` lists available filters),
+503 `SERVICE_UNAVAILABLE` (bank contract report in `details.issues`). The
+bank reloads automatically when its files change (mtime check) — update the
+bank by committing the changed files and pushing.

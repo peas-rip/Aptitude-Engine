@@ -1,0 +1,804 @@
+{
+  "schema_version": "1.0",
+  "purpose": "Agent-ready knowledge and practice bank for quantitative aptitude test generation.",
+  "provenance": {
+    "question_source": "Quantitative Aptitude EBook",
+    "question_records": 1310,
+    "taxonomy": "content-derived normalized chapter/topic labels",
+    "difficulty": "heuristic, not a source-provided difficulty rating",
+    "solutions": "concise topic-method solutions anchored to the source answer key; they are not a replacement for verified worked derivations",
+    "web_research_note": "Short tricks were supplemented from current web study material where useful; source URLs are retained per topic."
+  },
+  "chapters": {
+    "Algebra & Number Patterns": {
+      "question_count": 98,
+      "topics": {
+        "Linear Equations": {
+          "question_count": 52,
+          "difficulty_counts": {
+            "easy": 52
+          },
+          "formulas": [
+            "For ax+b=c, x=(c−b)/a."
+          ],
+          "short_tricks": [],
+          "web_research": []
+        },
+        "Number Series": {
+          "question_count": 46,
+          "difficulty_counts": {
+            "easy": 46
+          },
+          "formulas": [
+            "Check first differences, second differences, ratios, alternating terms, squares/cubes, or recurrence patterns."
+          ],
+          "short_tricks": [],
+          "web_research": []
+        }
+      },
+      "chapter_formula_summary": [
+        "Check first differences, second differences, ratios, alternating terms, squares/cubes, or recurrence patterns.",
+        "For ax+b=c, x=(c−b)/a."
+      ]
+    },
+    "Average": {
+      "question_count": 9,
+      "topics": {
+        "Average / Replacement Average": {
+          "question_count": 9,
+          "difficulty_counts": {
+            "medium": 9
+          },
+          "formulas": [
+            "Average = sum/n.",
+            "Sum = average×n.",
+            "Combined average = total combined sum / total combined count."
+          ],
+          "short_tricks": [
+            "For consecutive numbers, average=(first+last)/2.",
+            "When one value changes, change in average = change in total / number of observations."
+          ],
+          "web_research": [
+            {
+              "source_name": "LearnFrenzy",
+              "url": "https://learnfrenzy.com/aptitude/quantitative-aptitude/average?type=shortcuts"
+            }
+          ]
+        }
+      },
+      "chapter_formula_summary": [
+        "Average = sum/n.",
+        "Combined average = total combined sum / total combined count.",
+        "Sum = average×n."
+      ]
+    },
+    "Basic Arithmetic": {
+      "question_count": 159,
+      "topics": {
+        "Addition & Subtraction": {
+          "question_count": 27,
+          "difficulty_counts": {
+            "easy": 27
+          },
+          "formulas": [
+            "Sum/difference = combine terms in the stated order.",
+            "For first n natural numbers: n(n+1)/2."
+          ],
+          "short_tricks": [],
+          "web_research": []
+        },
+        "Division": {
+          "question_count": 38,
+          "difficulty_counts": {
+            "easy": 38
+          },
+          "formulas": [
+            "Dividend = Divisor × Quotient + Remainder, with 0 ≤ Remainder < Divisor."
+          ],
+          "short_tricks": [],
+          "web_research": []
+        },
+        "General Arithmetic": {
+          "question_count": 24,
+          "difficulty_counts": {
+            "easy": 24
+          },
+          "formulas": [
+            "Use standard order of operations and exact arithmetic; simplify fractions before operating."
+          ],
+          "short_tricks": [],
+          "web_research": []
+        },
+        "Multiplication": {
+          "question_count": 60,
+          "difficulty_counts": {
+            "easy": 60
+          },
+          "formulas": [
+            "a×b can be decomposed as a×(base±d) for mental calculation."
+          ],
+          "short_tricks": [],
+          "web_research": []
+        },
+        "Squares & Roots": {
+          "question_count": 10,
+          "difficulty_counts": {
+            "easy": 10
+          },
+          "formulas": [
+            "(a+b)^2 = a^2+2ab+b^2.",
+            "(a-b)^2 = a^2-2ab+b^2.",
+            "√(a^2)=|a|."
+          ],
+          "short_tricks": [],
+          "web_research": []
+        }
+      },
+      "chapter_formula_summary": [
+        "(a+b)^2 = a^2+2ab+b^2.",
+        "(a-b)^2 = a^2-2ab+b^2.",
+        "Dividend = Divisor × Quotient + Remainder, with 0 ≤ Remainder < Divisor.",
+        "For first n natural numbers: n(n+1)/2.",
+        "Sum/difference = combine terms in the stated order.",
+        "Use standard order of operations and exact arithmetic; simplify fractions before operating.",
+        "a×b can be decomposed as a×(base±d) for mental calculation.",
+        "√(a^2)=|a|."
+      ]
+    },
+    "Data Interpretation": {
+      "question_count": 27,
+      "topics": {
+        "Tables, Graphs & Percentages": {
+          "question_count": 27,
+          "difficulty_counts": {
+            "medium": 25,
+            "easy": 2
+          },
+          "formulas": [
+            "Percentage change=(new−old)/old×100.",
+            "Average=sum/count.",
+            "For table/graph totals, sum the requested entries only.",
+            "For category percentages, part/whole×100."
+          ],
+          "short_tricks": [
+            "Scan for maximum/minimum before calculating.",
+            "Use rounded values and eliminate options when exact calculation is unnecessary.",
+            "For percentage questions, identify the denominator explicitly before calculating."
+          ],
+          "web_research": [
+            {
+              "source_name": "LearnFrenzy",
+              "url": "https://learnfrenzy.com/aptitude/data-interpretation/table-charts?type=shortcuts"
+            }
+          ]
+        }
+      },
+      "chapter_formula_summary": [
+        "Average=sum/count.",
+        "For category percentages, part/whole×100.",
+        "For table/graph totals, sum the requested entries only.",
+        "Percentage change=(new−old)/old×100."
+      ]
+    },
+    "General Quantitative Aptitude": {
+      "question_count": 1,
+      "topics": {
+        "Mixed Arithmetic": {
+          "question_count": 1,
+          "difficulty_counts": {
+            "medium": 1
+          },
+          "formulas": [],
+          "short_tricks": [],
+          "web_research": []
+        }
+      },
+      "chapter_formula_summary": []
+    },
+    "Geometry & Mensuration": {
+      "question_count": 153,
+      "topics": {
+        "Area & Perimeter": {
+          "question_count": 74,
+          "difficulty_counts": {
+            "easy": 71,
+            "medium": 3
+          },
+          "formulas": [
+            "Rectangle: A=lb, P=2(l+b).",
+            "Square: A=a^2, P=4a, diagonal=a√2.",
+            "Circle: A=πr^2, circumference=2πr.",
+            "Triangle: A=1/2 bh."
+          ],
+          "short_tricks": [
+            "Use π=22/7 when dimensions make it exact and the problem permits it.",
+            "For a square, diagonal=a√2."
+          ],
+          "web_research": [
+            {
+              "source_name": "LearnFrenzy",
+              "url": "https://learnfrenzy.com/aptitude/quantitative-aptitude/area-and-perimeter?type=shortcuts"
+            }
+          ]
+        },
+        "Volume & Surface Area": {
+          "question_count": 79,
+          "difficulty_counts": {
+            "easy": 77,
+            "medium": 2
+          },
+          "formulas": [
+            "Cube: V=a^3, TSA=6a^2.",
+            "Cuboid: V=lbh, TSA=2(lb+bh+hl).",
+            "Cylinder: V=πr^2h, CSA=2πrh, TSA=2πr(h+r).",
+            "Sphere: V=4πr^3/3, SA=4πr^2.",
+            "Cone: V=πr^2h/3, CSA=πrl, TSA=πr(l+r)."
+          ],
+          "short_tricks": [
+            "Keep units consistent (cm³, m³, etc.).",
+            "For similar solids, volume scales as the cube of the linear scale factor."
+          ],
+          "web_research": [
+            {
+              "source_name": "LearnFrenzy",
+              "url": "https://learnfrenzy.com/aptitude/quantitative-aptitude/volume--surface-areas?type=shortcuts"
+            }
+          ]
+        }
+      },
+      "chapter_formula_summary": [
+        "Circle: A=πr^2, circumference=2πr.",
+        "Cone: V=πr^2h/3, CSA=πrl, TSA=πr(l+r).",
+        "Cube: V=a^3, TSA=6a^2.",
+        "Cuboid: V=lbh, TSA=2(lb+bh+hl).",
+        "Cylinder: V=πr^2h, CSA=2πrh, TSA=2πr(h+r).",
+        "Rectangle: A=lb, P=2(l+b).",
+        "Sphere: V=4πr^3/3, SA=4πr^2.",
+        "Square: A=a^2, P=4a, diagonal=a√2.",
+        "Triangle: A=1/2 bh."
+      ]
+    },
+    "Interest": {
+      "question_count": 44,
+      "topics": {
+        "Compound Interest": {
+          "question_count": 27,
+          "difficulty_counts": {
+            "medium": 19,
+            "easy": 2,
+            "hard": 6
+          },
+          "formulas": [
+            "Amount=P(1+R/100)^n.",
+            "CI=Amount−P.",
+            "For m compounding periods/year, use rate R/m and periods nm."
+          ],
+          "short_tricks": [
+            "For short periods, compare CI and SI using the amount formula rather than expanding every term."
+          ],
+          "web_research": [
+            {
+              "source_name": "LearnFrenzy",
+              "url": "https://learnfrenzy.com/aptitude/quantitative-aptitude/compound-interest?type=shortcuts"
+            }
+          ]
+        },
+        "Simple Interest": {
+          "question_count": 17,
+          "difficulty_counts": {
+            "easy": 13,
+            "medium": 4
+          },
+          "formulas": [
+            "SI=PRT/100.",
+            "Amount=P+SI=P(1+RT/100)."
+          ],
+          "short_tricks": [
+            "SI% over the whole period = R×T.",
+            "Convert months to years before applying the formula."
+          ],
+          "web_research": [
+            {
+              "source_name": "LearnFrenzy",
+              "url": "https://learnfrenzy.com/aptitude/quantitative-aptitude/simple-interest?type=shortcuts"
+            }
+          ]
+        }
+      },
+      "chapter_formula_summary": [
+        "Amount=P(1+R/100)^n.",
+        "Amount=P+SI=P(1+RT/100).",
+        "CI=Amount−P.",
+        "For m compounding periods/year, use rate R/m and periods nm.",
+        "SI=PRT/100."
+      ]
+    },
+    "Number System": {
+      "question_count": 74,
+      "topics": {
+        "HCF & LCM": {
+          "question_count": 51,
+          "difficulty_counts": {
+            "easy": 51
+          },
+          "formulas": [
+            "For two positive integers: HCF×LCM = product of the two numbers.",
+            "HCF uses minimum prime exponents; LCM uses maximum prime exponents.",
+            "Euclidean algorithm gives HCF efficiently."
+          ],
+          "short_tricks": [
+            "If two numbers are coprime, LCM=product.",
+            "If one number divides the other, HCF=smaller and LCM=larger.",
+            "For same-remainder divisor questions, reduce the numbers by the common remainder before taking HCF."
+          ],
+          "web_research": [
+            {
+              "source_name": "LearnFrenzy",
+              "url": "https://learnfrenzy.com/aptitude/quantitative-aptitude/problems-on-hcf-and-lcm?type=shortcuts"
+            }
+          ]
+        },
+        "Primes, Factors & Remainders": {
+          "question_count": 23,
+          "difficulty_counts": {
+            "easy": 23
+          },
+          "formulas": [
+            "Divisibility by 2: last digit even; by 3/9: digit sum divisible by 3/9; by 5: last digit 0 or 5; by 11: alternating digit-sum difference divisible by 11.",
+            "For a=p1^a p2^b..., number of divisors=(a+1)(b+1)..."
+          ],
+          "short_tricks": [
+            "For unit digits, use cycles; e.g. powers of 2 cycle 2,4,8,6."
+          ],
+          "web_research": [
+            {
+              "source_name": "LearnFrenzy",
+              "url": "https://learnfrenzy.com/aptitude/quantitative-aptitude/number-system?type=shortcuts"
+            }
+          ]
+        }
+      },
+      "chapter_formula_summary": [
+        "Divisibility by 2: last digit even; by 3/9: digit sum divisible by 3/9; by 5: last digit 0 or 5; by 11: alternating digit-sum difference divisible by 11.",
+        "Euclidean algorithm gives HCF efficiently.",
+        "For a=p1^a p2^b..., number of divisors=(a+1)(b+1)...",
+        "For two positive integers: HCF×LCM = product of the two numbers.",
+        "HCF uses minimum prime exponents; LCM uses maximum prime exponents."
+      ]
+    },
+    "Partnership": {
+      "question_count": 50,
+      "topics": {
+        "Capital–Time Profit Sharing": {
+          "question_count": 50,
+          "difficulty_counts": {
+            "medium": 1,
+            "hard": 49
+          },
+          "formulas": [
+            "Profit share ratio ∝ capital×time."
+          ],
+          "short_tricks": [
+            "Multiply capital by months invested before forming the profit ratio."
+          ],
+          "web_research": [
+            {
+              "source_name": "LearnFrenzy",
+              "url": "https://learnfrenzy.com/aptitude/quantitative-aptitude/partnership?type=shortcuts"
+            }
+          ]
+        }
+      },
+      "chapter_formula_summary": [
+        "Profit share ratio ∝ capital×time."
+      ]
+    },
+    "Percentage, Profit & Loss": {
+      "question_count": 123,
+      "topics": {
+        "Percentage": {
+          "question_count": 45,
+          "difficulty_counts": {
+            "easy": 26,
+            "medium": 19
+          },
+          "formulas": [
+            "Percentage = (part/whole)×100.",
+            "Percentage change = (new−old)/old ×100.",
+            "Successive changes a%, b%: net % = a+b+ab/100, using signed percentages."
+          ],
+          "short_tricks": [
+            "x% of y = y% of x.",
+            "Memorize common fractions: 1/2=50%, 1/3≈33.33%, 1/4=25%, 1/5=20%, 1/8=12.5%.",
+            "Equal +x% then −x% gives net loss x²/100%."
+          ],
+          "web_research": [
+            {
+              "source_name": "LearnFrenzy",
+              "url": "https://learnfrenzy.com/aptitude/quantitative-aptitude/percentage?type=shortcuts"
+            }
+          ]
+        },
+        "Profit, Loss & Discount": {
+          "question_count": 78,
+          "difficulty_counts": {
+            "medium": 52,
+            "easy": 26
+          },
+          "formulas": [
+            "Profit = SP−CP; Loss = CP−SP.",
+            "Profit% = Profit/CP×100; Loss% = Loss/CP×100.",
+            "SP = CP(1±p/100).",
+            "Discount = MP−SP; Discount% = Discount/MP×100.",
+            "Successive discounts x%, y%: net discount = x+y−xy/100."
+          ],
+          "short_tricks": [
+            "For equal gain/loss percentages on the same base, keep CP as the base for profit/loss.",
+            "Successive discounts use x+y−xy/100."
+          ],
+          "web_research": [
+            {
+              "source_name": "LearnFrenzy",
+              "url": "https://learnfrenzy.com/aptitude/quantitative-aptitude/profit--loss"
+            }
+          ]
+        }
+      },
+      "chapter_formula_summary": [
+        "Discount = MP−SP; Discount% = Discount/MP×100.",
+        "Percentage = (part/whole)×100.",
+        "Percentage change = (new−old)/old ×100.",
+        "Profit = SP−CP; Loss = CP−SP.",
+        "Profit% = Profit/CP×100; Loss% = Loss/CP×100.",
+        "SP = CP(1±p/100).",
+        "Successive changes a%, b%: net % = a+b+ab/100, using signed percentages.",
+        "Successive discounts x%, y%: net discount = x+y−xy/100."
+      ]
+    },
+    "Permutation & Combination": {
+      "question_count": 47,
+      "topics": {
+        "Combinations / Selection": {
+          "question_count": 21,
+          "difficulty_counts": {
+            "easy": 3,
+            "hard": 12,
+            "medium": 6
+          },
+          "formulas": [
+            "nCr=n!/[r!(n−r)!].",
+            "nCr=nC(n−r).",
+            "nPr=nCr×r!."
+          ],
+          "short_tricks": [
+            "First ask: does order matter? No→combination.",
+            "Use nCr=nC(n−r) to minimize arithmetic."
+          ],
+          "web_research": [
+            {
+              "source_name": "LearnFrenzy",
+              "url": "https://learnfrenzy.com/aptitude/quantitative-aptitude/permutations--combinations?type=shortcuts"
+            }
+          ]
+        },
+        "Permutations / Arrangement": {
+          "question_count": 25,
+          "difficulty_counts": {
+            "easy": 5,
+            "medium": 20
+          },
+          "formulas": [
+            "nPr=n!/(n−r)!.",
+            "For n distinct objects arranged in a row: n!.",
+            "Circular arrangements of n distinct objects: (n−1)! when rotations are identical."
+          ],
+          "short_tricks": [
+            "First ask: does order matter? Yes→permutation.",
+            "For “must be together”, treat the group as one block, then arrange inside it."
+          ],
+          "web_research": [
+            {
+              "source_name": "LearnFrenzy",
+              "url": "https://learnfrenzy.com/aptitude/quantitative-aptitude/permutations--combinations?type=shortcuts"
+            }
+          ]
+        },
+        "Permutations with Repeated Letters": {
+          "question_count": 1,
+          "difficulty_counts": {
+            "easy": 1
+          },
+          "formulas": [
+            "Number of arrangements = n!/(p!q!...) for repeated letters."
+          ],
+          "short_tricks": [],
+          "web_research": []
+        }
+      },
+      "chapter_formula_summary": [
+        "Circular arrangements of n distinct objects: (n−1)! when rotations are identical.",
+        "For n distinct objects arranged in a row: n!.",
+        "Number of arrangements = n!/(p!q!...) for repeated letters.",
+        "nCr=n!/[r!(n−r)!].",
+        "nCr=nC(n−r).",
+        "nPr=n!/(n−r)!.",
+        "nPr=nCr×r!."
+      ]
+    },
+    "Probability": {
+      "question_count": 53,
+      "topics": {
+        "Classical Probability": {
+          "question_count": 53,
+          "difficulty_counts": {
+            "medium": 35,
+            "hard": 16,
+            "easy": 2
+          },
+          "formulas": [
+            "P(E)=favourable outcomes/total outcomes.",
+            "P(not E)=1−P(E).",
+            "For independent events, P(A and B)=P(A)P(B)."
+          ],
+          "short_tricks": [
+            "“At least one” is often fastest as 1−P(none).",
+            "For equally likely outcomes, count combinations instead of enumerating ordered outcomes when convenient."
+          ],
+          "web_research": [
+            {
+              "source_name": "LearnFrenzy",
+              "url": "https://learnfrenzy.com/aptitude/quantitative-aptitude/probability?type=shortcuts"
+            }
+          ]
+        }
+      },
+      "chapter_formula_summary": [
+        "For independent events, P(A and B)=P(A)P(B).",
+        "P(E)=favourable outcomes/total outcomes.",
+        "P(not E)=1−P(E)."
+      ]
+    },
+    "Problems on Ages": {
+      "question_count": 125,
+      "topics": {
+        "Age Ratios / Equations": {
+          "question_count": 125,
+          "difficulty_counts": {
+            "easy": 28,
+            "medium": 97
+          },
+          "formulas": [
+            "Age after n years=x+n; age n years ago=x−n.",
+            "Age differences remain constant."
+          ],
+          "short_tricks": [
+            "Use one variable for present age whenever possible; age differences stay fixed."
+          ],
+          "web_research": [
+            {
+              "source_name": "LearnFrenzy",
+              "url": "https://learnfrenzy.com/aptitude/quantitative-aptitude/problem-on-ages?type=shortcuts"
+            }
+          ]
+        }
+      },
+      "chapter_formula_summary": [
+        "Age after n years=x+n; age n years ago=x−n.",
+        "Age differences remain constant."
+      ]
+    },
+    "Ratio, Proportion & Mixture": {
+      "question_count": 98,
+      "topics": {
+        "Compound Ratios": {
+          "question_count": 9,
+          "difficulty_counts": {
+            "easy": 9
+          },
+          "formulas": [
+            "If a:b=m:n and b:c=p:q, make the common term b equal by scaling the two ratios, then read a:b:c."
+          ],
+          "short_tricks": [],
+          "web_research": []
+        },
+        "Mixture / Replacement": {
+          "question_count": 69,
+          "difficulty_counts": {
+            "medium": 3,
+            "hard": 66
+          },
+          "formulas": [
+            "Mean/weighted average = total value/total quantity.",
+            "Alligation ratio = (dearer−mean):(mean−cheaper).",
+            "After replacing y from total x, original substance left after n replacements = original×((x−y)/x)^n."
+          ],
+          "short_tricks": [
+            "Alligation is a weighted-average shortcut; the mean must lie between the extreme values.",
+            "In replacement questions, the quantity of original substance is multiplied by ((x−y)/x) each round."
+          ],
+          "web_research": [
+            {
+              "source_name": "LearnFrenzy",
+              "url": "https://learnfrenzy.com/aptitude/quantitative-aptitude/alligation-or-mixture?type=shortcuts"
+            }
+          ]
+        },
+        "Ratio / Proportion": {
+          "question_count": 20,
+          "difficulty_counts": {
+            "medium": 19,
+            "easy": 1
+          },
+          "formulas": [
+            "a:b=a/b.",
+            "If a:b=c:d, then ad=bc.",
+            "Share = part/total parts × total amount."
+          ],
+          "short_tricks": [
+            "Reduce ratios immediately using their HCF.",
+            "For a:b and c:d, compare ad with bc."
+          ],
+          "web_research": [
+            {
+              "source_name": "LearnFrenzy",
+              "url": "https://learnfrenzy.com/aptitude/quantitative-aptitude/ratio-and-proportion?type=shortcuts"
+            }
+          ]
+        }
+      },
+      "chapter_formula_summary": [
+        "After replacing y from total x, original substance left after n replacements = original×((x−y)/x)^n.",
+        "Alligation ratio = (dearer−mean):(mean−cheaper).",
+        "If a:b=c:d, then ad=bc.",
+        "If a:b=m:n and b:c=p:q, make the common term b equal by scaling the two ratios, then read a:b:c.",
+        "Mean/weighted average = total value/total quantity.",
+        "Share = part/total parts × total amount.",
+        "a:b=a/b."
+      ]
+    },
+    "Simplification & Approximation": {
+      "question_count": 133,
+      "topics": {
+        "Approximation": {
+          "question_count": 49,
+          "difficulty_counts": {
+            "easy": 49
+          },
+          "formulas": [
+            "Round at the requested place; 0–4 stays, 5–9 rounds up.",
+            "Approximate only when the options tolerate the resulting error."
+          ],
+          "short_tricks": [
+            "Round to nearby easy numbers such as 198≈200 and 49≈50 when options are sufficiently separated.",
+            "For roots, use the nearest perfect square/cube."
+          ],
+          "web_research": [
+            {
+              "source_name": "LearnFrenzy",
+              "url": "https://learnfrenzy.com/aptitude/quantitative-aptitude/approximate-values?type=shortcuts"
+            }
+          ]
+        },
+        "Simplification / Arithmetic Operations": {
+          "question_count": 84,
+          "difficulty_counts": {
+            "easy": 64,
+            "medium": 20
+          },
+          "formulas": [
+            "Follow VBODMAS/BODMAS.",
+            "(a+b)(a−b)=a^2−b^2.",
+            "a^3±b^3=(a±b)(a^2∓ab+b^2)."
+          ],
+          "short_tricks": [
+            "Use 99×101=(100−1)(100+1)=9999.",
+            "25×n = 100n/4; 5×n=10n/2."
+          ],
+          "web_research": [
+            {
+              "source_name": "LearnFrenzy",
+              "url": "https://learnfrenzy.com/aptitude/quantitative-aptitude/simplification?type=shortcuts"
+            }
+          ]
+        }
+      },
+      "chapter_formula_summary": [
+        "(a+b)(a−b)=a^2−b^2.",
+        "Approximate only when the options tolerate the resulting error.",
+        "Follow VBODMAS/BODMAS.",
+        "Round at the requested place; 0–4 stays, 5–9 rounds up.",
+        "a^3±b^3=(a±b)(a^2∓ab+b^2)."
+      ]
+    },
+    "Time & Work": {
+      "question_count": 55,
+      "topics": {
+        "Work Rate / Combined Work": {
+          "question_count": 55,
+          "difficulty_counts": {
+            "medium": 7,
+            "hard": 48
+          },
+          "formulas": [
+            "One-day work=1/n if work takes n days.",
+            "Combined rate = sum of individual rates.",
+            "Time=1/combined rate.",
+            "For x,y days together: xy/(x+y)."
+          ],
+          "short_tricks": [
+            "Take total work as the LCM of individual completion times to avoid fractions.",
+            "Efficiency is inversely proportional to completion time."
+          ],
+          "web_research": [
+            {
+              "source_name": "LearnFrenzy",
+              "url": "https://learnfrenzy.com/aptitude/quantitative-aptitude/work--time?type=shortcuts"
+            }
+          ]
+        }
+      },
+      "chapter_formula_summary": [
+        "Combined rate = sum of individual rates.",
+        "For x,y days together: xy/(x+y).",
+        "One-day work=1/n if work takes n days.",
+        "Time=1/combined rate."
+      ]
+    },
+    "Time, Speed & Distance": {
+      "question_count": 61,
+      "topics": {
+        "Speed–Time–Distance": {
+          "question_count": 61,
+          "difficulty_counts": {
+            "easy": 57,
+            "medium": 4
+          },
+          "formulas": [
+            "D=ST, S=D/T, T=D/S.",
+            "km/h to m/s: ×5/18; m/s to km/h: ×18/5.",
+            "Equal-distance average speed=2uv/(u+v).",
+            "Relative speed: difference same direction, sum opposite direction."
+          ],
+          "short_tricks": [
+            "Use the distance–speed–time triangle mentally.",
+            "For equal distances, never use the arithmetic mean of speeds."
+          ],
+          "web_research": [
+            {
+              "source_name": "LearnFrenzy",
+              "url": "https://learnfrenzy.com/aptitude/quantitative-aptitude/speed-time-and-distance?type=shortcuts"
+            }
+          ]
+        }
+      },
+      "chapter_formula_summary": [
+        "D=ST, S=D/T, T=D/S.",
+        "Equal-distance average speed=2uv/(u+v).",
+        "Relative speed: difference same direction, sum opposite direction.",
+        "km/h to m/s: ×5/18; m/s to km/h: ×18/5."
+      ]
+    }
+  },
+  "web_sources": [
+    "https://learnfrenzy.com/aptitude/data-interpretation/table-charts?type=shortcuts",
+    "https://learnfrenzy.com/aptitude/quantitative-aptitude/alligation-or-mixture?type=shortcuts",
+    "https://learnfrenzy.com/aptitude/quantitative-aptitude/approximate-values?type=shortcuts",
+    "https://learnfrenzy.com/aptitude/quantitative-aptitude/area-and-perimeter?type=shortcuts",
+    "https://learnfrenzy.com/aptitude/quantitative-aptitude/average?type=shortcuts",
+    "https://learnfrenzy.com/aptitude/quantitative-aptitude/compound-interest?type=shortcuts",
+    "https://learnfrenzy.com/aptitude/quantitative-aptitude/number-system?type=shortcuts",
+    "https://learnfrenzy.com/aptitude/quantitative-aptitude/partnership?type=shortcuts",
+    "https://learnfrenzy.com/aptitude/quantitative-aptitude/percentage?type=shortcuts",
+    "https://learnfrenzy.com/aptitude/quantitative-aptitude/permutations--combinations?type=shortcuts",
+    "https://learnfrenzy.com/aptitude/quantitative-aptitude/probability?type=shortcuts",
+    "https://learnfrenzy.com/aptitude/quantitative-aptitude/problem-on-ages?type=shortcuts",
+    "https://learnfrenzy.com/aptitude/quantitative-aptitude/problems-on-hcf-and-lcm?type=shortcuts",
+    "https://learnfrenzy.com/aptitude/quantitative-aptitude/profit--loss",
+    "https://learnfrenzy.com/aptitude/quantitative-aptitude/ratio-and-proportion?type=shortcuts",
+    "https://learnfrenzy.com/aptitude/quantitative-aptitude/simple-interest?type=shortcuts",
+    "https://learnfrenzy.com/aptitude/quantitative-aptitude/simplification?type=shortcuts",
+    "https://learnfrenzy.com/aptitude/quantitative-aptitude/speed-time-and-distance?type=shortcuts",
+    "https://learnfrenzy.com/aptitude/quantitative-aptitude/volume--surface-areas?type=shortcuts",
+    "https://learnfrenzy.com/aptitude/quantitative-aptitude/work--time?type=shortcuts"
+  ]
+}

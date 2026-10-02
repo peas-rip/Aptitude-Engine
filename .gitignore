@@ -59,4 +59,9 @@ logs/
 .ipynb_checkpoints/
 
 # Book source data (never commit; input corpus)
-data/input/
+data/input/*
+# Upstream contract files = the Test & Practice Agent's bank.
+# Tracked so git-based deploys (Railway) ship them; raw book sources stay out.
+!data/input/aptitude_test_blueprint.json
+!data/input/book_questions_agent_ready.jsonl
+!data/input/aptitude_agent_knowledge.json
