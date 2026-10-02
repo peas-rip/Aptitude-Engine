@@ -83,15 +83,16 @@ all model overrides). See `AGENTS.md` for agent-facing rules and milestone state
 ## Deployment
 
 The Test & Practice API (`API_CONTRACTS` §1.7) targets **Railway** (any
-git-based PaaS works): push to `main` → Nixpacks builds `pyproject.toml` →
-service boots. The three bank files in `data/input/` ship with the repo.
+git-based PaaS works): push to `main` → Railpack builds `pyproject.toml`
+(zero config; the `Procfile` supplies the start command) → service boots.
+The three bank files in `data/input/` ship with the repo.
 
 **Service configuration (Railway dashboard):**
 
 | Setting | Value |
 |---|---|
-| Start command | `uvicorn qme.main:app --host 0.0.0.0 --port $PORT` |
-| Health check path | `/api/v1/health` (open, keyless) |
+| Start command | `uvicorn qme.main:app --host 0.0.0.0 --port $PORT` (auto from `Procfile`) |
+| Health check path | `/api/v1/health` (open, keyless) — **required**, `/` 404s |
 | `ENVIRONMENT` | `production` (app refuses to boot without a key) |
 | `QME_API_KEY` | `python -c "import secrets; print(secrets.token_urlsafe(32))"` |
 | `QME_BLUEPRINT_PATH` | optional — defaults to `data/input/aptitude_test_blueprint.json` |
