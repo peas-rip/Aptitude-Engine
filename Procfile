@@ -1,1 +1,1 @@
-web: uvicorn qme.main:app --host 0.0.0.0 --port $PORT
+web: uvicorn --app-dir src --host 0.0.0.0 --port $PORT qme.main:app

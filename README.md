@@ -84,16 +84,16 @@ all model overrides). See `AGENTS.md` for agent-facing rules and milestone state
 
 The Test & Practice API (`API_CONTRACTS` §1.7) targets **Railway** (any
 git-based PaaS works): push to `main` → Railpack builds (Python pinned by
-`.python-version`; `requirements.txt` points pip at the project so all
-dependencies resolve from `pyproject.toml`; the `Procfile` supplies the start
-command) → service boots. The three bank files in `data/input/` ship with the
-repo.
+`.python-version`; `requirements.txt` mirrors `pyproject.toml`'s runtime
+dependencies — the project itself is *not* installed, the `Procfile` imports
+it from `src/` via `uvicorn --app-dir`) → service boots. The three bank files
+in `data/input/` ship with the repo.
 
 **Service configuration (Railway dashboard):**
 
 | Setting | Value |
 |---|---|
-| Start command | `uvicorn qme.main:app --host 0.0.0.0 --port $PORT` (auto from `Procfile`) |
+| Start command | `uvicorn --app-dir src --host 0.0.0.0 --port $PORT qme.main:app` (auto from `Procfile`) |
 | Health check path | `/api/v1/health` (open, keyless) — **required**, `/` 404s |
 | `ENVIRONMENT` | `production` (app refuses to boot without a key) |
 | `QME_API_KEY` | `python -c "import secrets; print(secrets.token_urlsafe(32))"` |
