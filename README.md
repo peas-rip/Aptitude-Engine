@@ -15,9 +15,10 @@ structured data that downstream agents consume.
 | M2 Ingestion | 2 | JSONL/CSV/TXT parsers, normalizer, source tracker, `qme ingest` | 134 tests |
 | M3 Classification | 3 | Seed taxonomy (4 categories / 34 topics / 70 subtopics), LLM gateway (Gemini free tier, strict structured output), `Classifier` stage | category **25/25**, topic **25/25**, subtopic **22/24** |
 | M4 Difficulty | 4 | `difficulty_v1` tier-first prompt, pure scoring functions, reasoning-led factor weights, `DifficultyEngine` stage, 25-question gold standard | Pearson correlation **0.883 ≥ 0.8** |
+| Test & Practice Agent | — | `src/qme/testgen/` — blueprint-conformant test & practice assembly from the external agent's bank, `qme testgen` / `qme practice` (no LLM) | 60 tests, live bank smoke |
 
-Quality gates on `main`: **241 offline tests passing**, `ruff check src tests` clean,
-`mypy` clean (37 files). Three opt-in live evals deselected by default (`pytest -m ai_eval`).
+Quality gates on `main`: **301 offline tests passing**, `ruff check src tests` clean,
+`mypy` clean (45 files). Three opt-in live evals deselected by default (`pytest -m ai_eval`).
 
 ### Current work
 
@@ -29,10 +30,11 @@ Quality gates on `main`: **241 offline tests passing**, `ruff check src tests` c
 - **QME's pipeline is parked at M4** (owner decision). Resume point if unparked:
   M5 Solution Engine — genuine step-by-step solutions with answer-key validation,
   the gap left by the external agent's template solutions (`solution_basis: source_answer_key_plus_topic_method`).
-- **In progress:** the Test & Practice Agent (`qme testgen` / `qme practice`) — a
+- **Delivered:** the Test & Practice Agent (`qme testgen` / `qme practice`) — a
   deterministic assembler that consumes the three files above and produces
-  blueprint-shaped tests and difficulty-graded practice sets. No LLM calls, no rate
-  limits. See `docs/AGENT_SUMMARY.md`.
+  blueprint-shaped tests and difficulty-graded practice sets. Contract mismatches
+  hard-stop with a field-level report. No LLM calls, no rate limits. See
+  `docs/AGENT_SUMMARY.md`.
 
 ### Parked / deferred (owner decision)
 
