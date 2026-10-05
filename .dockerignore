@@ -1,0 +1,27 @@
+# VCS / local envs / caches
+.git
+.venv
+venv
+env
+__pycache__
+*.py[cod]
+.pytest_cache
+.mypy_cache
+.ruff_cache
+.env
+
+# Not needed in the image (README.md + LICENSE must STAY: pyproject build refs them)
+tests
+docs
+Makefile
+AGENTS.md
+TECHNOLOGY_DECISIONS.md
+*.log
+
+# Ship only what the runtime reads: allowlist data/input (mirror of .gitignore),
+# drop local pipeline outputs.
+data/input/*
+!data/input/aptitude_agent_knowledge.json
+!data/input/aptitude_test_blueprint.json
+!data/input/book_questions_agent_ready.jsonl
+data/output

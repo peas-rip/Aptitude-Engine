@@ -83,20 +83,21 @@ all model overrides). See `AGENTS.md` for agent-facing rules and milestone state
 ## Deployment
 
 The Test & Practice API (`API_CONTRACTS` §1.7) targets **Railway** (any
-git-based PaaS works): push to `main` → Railpack builds (Python pinned by
-`.python-version`; `requirements.txt` mirrors `pyproject.toml`'s runtime
-dependencies — the project itself is *not* installed, the `Procfile` imports
-it from `src/` via `uvicorn --app-dir`) → service boots. The three bank files
-in `data/input/` ship with the repo.
+git-based PaaS works): push to `main` → Railway builds the root `Dockerfile`
+(`python:3.11-slim`; deps from `requirements.txt`, then `pip install .` of the
+full tree) → service boots. `.dockerignore` ships only the three bank files
+from `data/input/` (the junk stays out of the image). `Procfile` +
+`requirements.txt` remain for non-Docker PaaS. Local check:
+`docker build -t qme . && docker run -p 8000:8000 -e QME_API_KEY=dev qme`.
 
 **Service configuration (Railway dashboard):**
 
 | Setting | Value |
 |---|---|
-| Start command | `uvicorn --app-dir src --host 0.0.0.0 --port $PORT qme.main:app` (auto from `Procfile`) |
+| Builder | Dockerfile (auto-detected from the repo root) |
+| Start command | leave **empty** — image `CMD` runs `uvicorn qme.main:app --host 0.0.0.0 --port $PORT` |
 | Health check path | `/api/v1/health` (open, keyless) — **required**, `/` 404s |
-| `ENVIRONMENT` | `production` (app refuses to boot without a key) |
-| `QME_API_KEY` | `python -c "import secrets; print(secrets.token_urlsafe(32))"` |
+| `QME_API_KEY` | `python -c "import secrets; print(secrets.token_urlsafe(32))"` — **required**: `ENVIRONMENT=production` is baked into the image, so the app refuses to boot without a key |
 | `QME_BLUEPRINT_PATH` | optional — defaults to `data/input/aptitude_test_blueprint.json` |
 
 **Consumer runbook:**
