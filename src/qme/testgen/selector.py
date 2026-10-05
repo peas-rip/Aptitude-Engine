@@ -12,7 +12,7 @@ from dataclasses import dataclass
 
 from qme.testgen.bank import Bank
 from qme.testgen.errors import SelectionError
-from qme.testgen.schemas import BankQuestion, Selection, Shortage
+from qme.testgen.schemas import BankQuestion, Selection, Shortage, qualify_chapter
 
 
 @dataclass
@@ -24,7 +24,11 @@ class SelectionResult:
 
 def _matches(q: BankQuestion, s: Selection) -> bool:
     c = q.classification
+    if s.source is not None and q.source.name != s.source:
+        return False
     if s.chapter is not None and c.chapter != s.chapter:
+        return False
+    if s.chapters and qualify_chapter(q.source.name, c.chapter) not in s.chapters:
         return False
     if s.topic is not None and c.topic != s.topic:
         return False
@@ -42,9 +46,18 @@ def _matches(q: BankQuestion, s: Selection) -> bool:
 def _report_unknown_filters(bank: Bank, s: Selection) -> tuple[list[str], dict]:
     issues: list[str] = []
     available: dict[str, list[str]] = {}
+    if s.source is not None and s.source not in bank.source_names:
+        issues.append(f"source {s.source!r} not in bank (available: {bank.source_names})")
+        available["sources"] = bank.source_names
     if s.chapter is not None and s.chapter not in bank.chapters:
         issues.append(f"chapter {s.chapter!r} not in bank (available: {bank.chapters})")
         available["chapters"] = bank.chapters
+    unknown_keys = [k for k in s.chapters if k not in bank.qualified_chapters]
+    if unknown_keys:
+        issues.append(
+            f"chapters {unknown_keys!r} not in bank (available: {bank.qualified_chapters})"
+        )
+        available["chapters"] = bank.qualified_chapters
     if s.topic is not None and s.topic not in bank.topics:
         issues.append(f"topic {s.topic!r} not in bank (available: {bank.topics})")
         available["topics"] = bank.topics

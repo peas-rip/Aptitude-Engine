@@ -13,6 +13,7 @@ from qme.testgen.schemas import (
     GeneratedTest,
     TestRequest,
     Timing,
+    qualify_chapter,
 )
 from qme.testgen.selector import select
 
@@ -20,9 +21,15 @@ from qme.testgen.selector import select
 def _coverage(questions: list[BankQuestion]) -> Coverage:
     return Coverage(
         total=len(questions),
-        by_chapter=dict(Counter(q.classification.chapter for q in questions)),
+        by_chapter=dict(
+            Counter(
+                qualify_chapter(q.source.name, q.classification.chapter)
+                for q in questions
+            )
+        ),
         by_topic=dict(Counter(q.classification.topic for q in questions)),
         by_difficulty=dict(Counter(q.classification.difficulty for q in questions)),
+        by_source=dict(Counter(q.source.name for q in questions)),
     )
 
 
@@ -73,6 +80,7 @@ def generate_test(bank: Bank, request: TestRequest) -> GeneratedTest:
     return GeneratedTest(
         test_id=test_id,
         title=request.title,
+        seed=request.seed,
         generated_at=datetime.now(UTC).isoformat(),
         contract_source={
             "blueprint": bank.blueprint_path.name,

@@ -37,3 +37,15 @@ class SelectionError(TestGenError):
     def __init__(self, message: str, details: dict | None = None) -> None:
         self.details = details or {}
         super().__init__(message)
+
+
+class SubmissionError(TestGenError):
+    """A submission's answers do not map onto the regenerated test.
+
+    Surfaced as ``422 ANSWER_MISMATCH`` (API_CONTRACTS 1.7); ``details``
+    names the offending question ids / option keys.
+    """
+
+    def __init__(self, message: str, details: dict | None = None) -> None:
+        self.details = details or {}
+        super().__init__(message)

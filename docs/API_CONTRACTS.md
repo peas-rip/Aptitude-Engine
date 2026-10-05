@@ -136,44 +136,193 @@ All endpoints below require the `X-API-Key` header except `/api/v1/health`.
 environment only; requests never carry file paths (the blueprint path is
 server configuration, `QME_BLUEPRINT_PATH`).
 
+**Canonical keys**
+
+- *Source key* = `source.name` verbatim (e.g. `Quantitative Aptitude EBook`).
+- *Chapter key* = `"<source.name> › <chapter>"` — engine-derived; upstream
+  data is never altered. Filters AND together: `sources × chapters × difficulty`.
+- Knowledge (formulas / shortcut tricks) is **source-less**: one shared
+  aptitude pool keyed by unqualified chapter/topic names.
+
 ```
-GET /api/v1/bank/meta
+GET  /api/v1/health
+GET  /api/v1/bank/meta
 POST /api/v1/tests
+POST /api/v1/tests/submit
 POST /api/v1/practice
+GET  /api/v1/chapters/{chapter_key}/knowledge
 ```
 
-**GET /api/v1/bank/meta** — discovery for callers building requests.
+**GET /api/v1/bank/meta** — discovery for callers building requests
+(feasibility pickers read `sources[].chapters[].difficulty_counts`).
 
 **Response 200:**
 ```json
 {
-  "chapters": ["Average", "..."],
+  "sources": [
+    {
+      "name": "Quantitative Aptitude EBook",
+      "question_count": 1310,
+      "chapters": [
+        {
+          "key": "Quantitative Aptitude EBook › Percentage, Profit & Loss",
+          "label": "Percentage, Profit & Loss",
+          "question_count": 123,
+          "difficulty_counts": {"easy": 52, "medium": 71, "hard": 0}
+        }
+      ]
+    }
+  ],
+  "chapters": ["Quantitative Aptitude EBook › Average", "..."],
   "topics": ["Average / Replacement Average", "..."],
   "difficulties": ["easy", "hard", "medium"],
   "question_count": 1310,
   "buckets": {"<chapter>": {"<topic>": {"<difficulty>": 12}}},
+  "knowledge_coverage": {"covered_chapters": ["Average"], "missing_chapters": []},
   "contract": { /* blueprint test_generation_contract verbatim */ }
 }
 ```
+`chapters` holds qualified keys (sorted); `buckets` stays blueprint verbatim
+(unqualified); `knowledge_coverage` reports over unqualified chapter names —
+knowledge is optional, never load-blocking.
 
-**POST /api/v1/tests** — request body is the `TestRequest` model from
-`qme.testgen.schemas` (selections with count + optional chapter, topic,
-difficulty, question_type, skills, page_min/page_max; seed; title; test_id;
-include_solutions).
+**POST /api/v1/tests** — exactly one of two body shapes per request.
 
-**Response 200:** the `GeneratedTest` model verbatim — fields
-`test_id`, `title`, `generated_at`, `contract_source`, `selections_applied`,
+*Friendly shape (recommended):*
+```json
+{
+  "title": "Unit Test 3",
+  "seed": 42,
+  "sources": ["Quantitative Aptitude EBook"],
+  "chapters": ["Quantitative Aptitude EBook › Percentage, Profit & Loss"],
+  "difficulty": {"mode": "mixed", "counts": {"easy": 10, "medium": 5, "hard": 5}},
+  "count": 20
+}
+```
+- `seed` optional — generated when absent; same seed + same request ⇒ same test.
+- `sources` absent = all sources; `chapters` absent = all chapters.
+- `difficulty.mode = "single"` takes `"value": "easy|medium|hard"`;
+  `"mixed"` takes non-negative `"counts"` (keys ⊆ easy/medium/hard) whose
+  sum equals `count`.
+
+*Legacy shape (kept; additive optional `source` field):*
+```json
+{
+  "selections": [
+    {"count": 10, "chapter": "Percentage, Profit & Loss",
+     "source": "Quantitative Aptitude EBook", "difficulty": "hard"}
+  ]
+}
+```
+Legacy `chapter` is unqualified: it resolves when it matches exactly one
+source; ambiguous across sources → 422 `INVALID_INPUT` (never silently
+merged). With a single source, legacy behavior is identical to v1. The
+legacy shape keeps v1 semantics (per-selection `count ≥ 1`; the friendly
+rule table below applies to the friendly shape only).
+
+*Test rules* — every violation → 422 `INVALID_INPUT`, `details` states the
+rule, the actual value, and valid/available options:
+
+| Rule | Value |
+|---|---|
+| `count` multiple of | 5 |
+| `count` minimum | 10 (any explicit chapter scope) |
+| `count` minimum | 30 when `chapters` is absent (all-chapters test) |
+| mixed `counts` sum | must equal `count` |
+| feasibility | `sources × chapters × difficulty` must hold ≥ `count` questions; `details.available_by_difficulty` reports what exists (10 chapters have zero hard) |
+| both shapes in one body | rejected as ambiguous |
+| unknown source/chapter | rejected; `details` lists valid names |
+
+**Response 200:** the `GeneratedTest` model verbatim — `test_id`, `title`,
+`generated_at`, `contract_source`, `selections_applied`,
 `selection_rules_applied`, `questions`, `answer_key`, `coverage`, `timing`,
 `shortages`, `notes`. Questions are byte-for-byte the bank records (never
-altered).
+altered). `Coverage` gains `by_source`; `by_chapter` keys are qualified
+chapter keys. Answers/solutions are included in the response (the frontend
+decides when to reveal them).
 
-**POST /api/v1/practice** — request body is the `PracticeRequest` model
-(count, chapter/topic/difficulty, mode `progressive|mixed`, seed, title,
-include_knowledge).
+**POST /api/v1/tests/submit** — end the test and deliver results
+(stateless round-trip; no server-side session).
 
-**Response 200:** the `PracticeSet` model verbatim — `practice_id`, `mode`,
-`questions` (ordered), `coverage`, `timing`, `shortages`, `topic_knowledge`,
-`chapter_formula_summary`.
+```json
+{
+  "test_id": "T-20261005-...",
+  "request": { /* exact POST /api/v1/tests body, including seed */ },
+  "answers": {"p5-1": "B", "p9-3": "C"},
+  "elapsed_seconds": 540
+}
+```
+`test_id` (optional) is the id echoed by the test response — carried into
+the result for traceability. The server regenerates the test
+deterministically from `request` and scores `answers` (`question_id` →
+option key) against it. Repeated submits with the same request + answers
+are idempotent. `elapsed_seconds` is recorded, not enforced — the frontend
+owns the timer and auto-submits when it expires; the client stores the
+returned result (no GET results endpoint).
+
+**Response 200:** `TestResult`:
+```json
+{
+  "test_id": "T-20261005-...",
+  "score": {"correct": 14, "total": 20, "percent": 70.0},
+  "by_difficulty": {"easy": {"correct": 8, "total": 10}},
+  "by_chapter": {"Quantitative Aptitude EBook › Average": {"correct": 3, "total": 3}},
+  "by_source": {"Quantitative Aptitude EBook": {"correct": 14, "total": 20}},
+  "elapsed_seconds": 540,
+  "results": [
+    {"question_id": "p5-1", "your_answer": "B", "correct_answer": "A",
+     "is_correct": false, "solution_steps": ["..."], "difficulty": "hard",
+     "chapter": "Quantitative Aptitude EBook › Percentage, Profit & Loss",
+     "source": "Quantitative Aptitude EBook"}
+  ]
+}
+```
+
+**POST /api/v1/practice** — paginated practice pool; correct answers and
+solutions are always included.
+
+```json
+{
+  "count": 5, "page": 2, "seed": 42,
+  "source": "Quantitative Aptitude EBook",
+  "chapter": "Quantitative Aptitude EBook › Percentage, Profit & Loss",
+  "topic": "...", "difficulty": "hard",
+  "mode": "progressive", "include_knowledge": true
+}
+```
+- `count` = page size (default 10, `≥ 1`), `page` = 1-based (default 1),
+  `source` absent = all sources. No test rules apply (no minimum/multiple).
+- Pagination is deterministic: the pool is ordered once from `seed` and
+  sliced — pages are disjoint and cover the pool. The response **echoes
+  `seed`**: reuse it with `page + 1` for the next page; changing any filter
+  or the seed reshuffles the pool.
+- Chapter resolution follows the same unique-match / ambiguity rule as tests.
+
+**Response 200:** the `PracticeSet` model verbatim (`practice_id`, `mode`,
+`questions`, `coverage`, `timing`, `shortages`, `topic_knowledge`,
+`chapter_formula_summary`) plus `seed` and:
+```json
+"pagination": {"page": 2, "count": 5, "total": 123, "total_pages": 25, "has_more": true}
+```
+A partial last page is normal; pool size is reported via
+`pagination.total` — practice never reports shortages (shortages remain a
+`/tests` concern; the field stays empty).
+
+**GET /api/v1/chapters/{chapter_key}/knowledge?topic=<name>** — formulas &
+shortcut tricks on demand (frontend calls it only when the user asks).
+- `chapter_key` accepts a qualified key (the source part is ignored for
+  lookup) or a raw chapter name; `topic` narrows to one topic.
+- **Response 200:**
+```json
+{
+  "chapter": "Percentage, Profit & Loss",
+  "topic": null,
+  "formula_summary": ["..."],
+  "topics": {"Linear Equations": {"formulas": ["..."], "short_tricks": ["..."]}}
+}
+```
+- Chapter exists but has no knowledge → 200 with empty lists (knowledge is
+  optional per source); unknown chapter → 404 `NOT_FOUND`.
 
 **Status codes:**
 
@@ -181,14 +330,29 @@ include_knowledge).
 |---|---|---|
 | Missing/wrong `X-API-Key` | 401 | `UNAUTHORIZED` |
 | Body fails schema validation | 422 | `VALIDATION_ERROR` |
-| `SelectionError` (unknown/empty filters) | 422 | `INVALID_INPUT` — `details` lists available chapters/topics/difficulties |
+| Test rule violated / unknown or ambiguous filter / infeasible scope | 422 | `INVALID_INPUT` — `details` states rule, actual value, valid/available options |
+| `SelectionError` (practice pool empty) | 422 | `INVALID_INPUT` |
+| Submit answers do not match the regenerated test | 422 | `ANSWER_MISMATCH` |
+| Unknown chapter on the knowledge endpoint | 404 | `NOT_FOUND` |
 | Bank broken/missing (`ContractError`) | 503 | `SERVICE_UNAVAILABLE` — `details.issues` is the contract field report |
 
-`UNAUTHORIZED` and `SERVICE_UNAVAILABLE` are extensions to the §4 error-code
-enum introduced by this section. Every error body follows the §4 envelope and
+`UNAUTHORIZED`, `SERVICE_UNAVAILABLE`, `NOT_FOUND`, and `ANSWER_MISMATCH`
+extend the §4 error-code enum. Every error body follows the §4 envelope and
 carries a per-request `request_id`. Responses are stateless JSON — the API
 never writes files (use the `qme testgen` / `qme practice` CLI commands for
 file output).
+
+**Bank adoption (multi-source, future-proofing):** the bank is one merged
+`book_questions_agent_ready.jsonl` + blueprint; a new source (e.g. TCS NQT)
+appears the moment its records exist — chapters/topics/sources are derived
+from the questions, so `/bank/meta` reflects them automatically.
+`question_id` must be globally unique across sources (prefix per source,
+e.g. `tcs-12`); the loader hard-stops with a field report and never silently
+rewrites ids. Knowledge is optional per chapter — missing entries surface via
+`knowledge_coverage` and empty knowledge responses — so a new source ships
+before its formulas exist; backfilling the knowledge JSON is adopted on the
+next request. Replacing any of the three bank files hot-reloads the cache
+(no restart required).
 
 ## 2. Internal Module Interfaces (Python Protocols)
 
@@ -379,7 +543,7 @@ class BatchConfig(BaseModel):
 ```json
 {
   "error": {
-    "code": "VALIDATION_ERROR|PROCESSING_ERROR|RATE_LIMITED|INVALID_INPUT|UNAUTHORIZED|SERVICE_UNAVAILABLE",
+    "code": "VALIDATION_ERROR|PROCESSING_ERROR|RATE_LIMITED|INVALID_INPUT|UNAUTHORIZED|SERVICE_UNAVAILABLE|NOT_FOUND|ANSWER_MISMATCH",
     "message": "Human-readable description",
     "details": { /* field-specific errors */ },
     "request_id": "uuid"

@@ -66,11 +66,18 @@ def practice_to_markdown(practice: PracticeSet) -> str:
         "",
         f"- **practice_id:** {practice.practice_id}",
         f"- **mode:** {practice.mode}",
+        f"- **seed:** {practice.seed}",
         f"- **generated_at:** {practice.generated_at}",
         f"- **coverage:** {_coverage_line(practice.coverage)}",
         f"- **timing:** {practice.timing.estimated_total_sec}s total",
-        "",
     ]
+    if practice.pagination:
+        p = practice.pagination
+        lines.append(
+            f"- **page:** {p.page}/{p.total_pages} (pool {p.total}, "
+            f"page size {p.count}, has_more={p.has_more})"
+        )
+    lines.append("")
     if practice.chapter_formula_summary:
         lines += ["## Chapter formula summary", ""]
         lines += [f"- {f}" for f in practice.chapter_formula_summary]

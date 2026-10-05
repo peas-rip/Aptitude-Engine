@@ -11,13 +11,17 @@ from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 
-from qme.testgen.errors import ContractError, SelectionError
+from qme.testgen.errors import ContractError, SelectionError, SubmissionError
 
 logger = logging.getLogger(__name__)
 
 
 class UnauthorizedError(Exception):
     """Missing or invalid ``X-API-Key`` (API_CONTRACTS 1.7)."""
+
+
+class NotFoundError(Exception):
+    """A named resource (e.g. a chapter) does not exist (API_CONTRACTS 1.7)."""
 
 
 def _envelope(status_code: int, code: str, message: str, details: dict) -> JSONResponse:
@@ -46,6 +50,16 @@ def register_exception_handlers(application: FastAPI) -> None:
     async def _selection_error(_request: Request, exc: SelectionError) -> JSONResponse:
         logger.info("selection rejected | %s", exc)
         return _envelope(422, "INVALID_INPUT", str(exc), exc.details)
+
+    @application.exception_handler(SubmissionError)
+    async def _submission_error(_request: Request, exc: SubmissionError) -> JSONResponse:
+        logger.info("submission rejected | %s", exc)
+        return _envelope(422, "ANSWER_MISMATCH", str(exc), exc.details)
+
+    @application.exception_handler(NotFoundError)
+    async def _not_found(_request: Request, exc: NotFoundError) -> JSONResponse:
+        logger.info("resource not found | %s", exc)
+        return _envelope(404, "NOT_FOUND", str(exc), {})
 
     @application.exception_handler(ContractError)
     async def _contract_error(_request: Request, exc: ContractError) -> JSONResponse:

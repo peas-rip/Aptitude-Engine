@@ -157,24 +157,40 @@ except on health:
 
 ```
 GET  /api/v1/health        (open; PaaS health check)
-GET  /api/v1/bank/meta     chapters/topics/difficulties/buckets/contract
-POST /api/v1/tests         body TestRequest    -> GeneratedTest
-POST /api/v1/practice      body PracticeRequest -> PracticeSet
+GET  /api/v1/bank/meta     sources[] {name, chapters[] {key, label,
+                           difficulty_counts}}, difficulties, buckets,
+                           knowledge_coverage, contract
+POST /api/v1/tests         body TestRequest (legacy) | TestSpec (friendly)
+                           -> GeneratedTest (+ seed, qualified coverage)
+POST /api/v1/tests/submit  body SubmitRequest -> TestResult (stateless,
+                           deterministic re-assembly + scoring)
+POST /api/v1/practice      body PracticeRequest (+ source, page)
+                           -> PracticeSet (+ seed, pagination)
+GET  /api/v1/chapters/{chapter_key}/knowledge[?topic=]
+                           -> ChapterKnowledge (formulas + short tricks)
 ```
 
+Both `POST /tests` shapes are accepted (exactly one per body). The friendly
+shape enforces the §1.7 rule table (count multiple of 5, min 10 / min 30
+all-chapters, mixed sums, feasibility) — violations return 422
+`INVALID_INPUT` with machine-readable `details.violations`.
+
 Errors follow the §4 envelope (`{error:{code,message,details,request_id}}`):
-401 `UNAUTHORIZED`, 422 `VALIDATION_ERROR`/`INVALID_INPUT`, 503
+401 `UNAUTHORIZED`, 404 `NOT_FOUND` (knowledge endpoint), 422
+`VALIDATION_ERROR`/`INVALID_INPUT`/`ANSWER_MISMATCH`, 503
 `SERVICE_UNAVAILABLE` (broken bank, full contract report in `details.issues`).
-The blueprint path is server config only (`QME_BLUEPRINT_PATH`); the bank is
-mtime-cached so regenerated files are picked up without restart; the app
-refuses to boot with `ENVIRONMENT=production` and no `QME_API_KEY`.
+The blueprint path is server config only (`QME_BLUEPRINT_PATH`); the three
+bank files (blueprint, questions, knowledge) are mtime-cached together so any
+regenerated file is picked up without restart; the app refuses to boot with
+`ENVIRONMENT=production` and no `QME_API_KEY`.
 
 CLI (Typer, part of the existing `qme` app):
 
 - `qme testgen --blueprint <path> --output <dir> [--count --chapter
-  --topic --difficulty --seed --test-id --title --format]`
+  --topic --difficulty --source --seed --test-id --title --format]`
 - `qme practice --blueprint <path> --output <dir> [--count --chapter
-  --topic --difficulty --mode --seed --practice-id --title --format]`
+  --topic --difficulty --source --page --mode --seed --practice-id
+  --title --format]`
 
 Programmatic: `qme.testgen.load_bank`, `generate_test`,
 `generate_practice`.

@@ -16,9 +16,10 @@ structured data that downstream agents consume.
 | M3 Classification | 3 | Seed taxonomy (4 categories / 34 topics / 70 subtopics), LLM gateway (Gemini free tier, strict structured output), `Classifier` stage | category **25/25**, topic **25/25**, subtopic **22/24** |
 | M4 Difficulty | 4 | `difficulty_v1` tier-first prompt, pure scoring functions, reasoning-led factor weights, `DifficultyEngine` stage, 25-question gold standard | Pearson correlation **0.883 ≥ 0.8** |
 | Test & Practice Agent | — | `src/qme/testgen/` — blueprint-conformant test & practice assembly from the external agent's bank, `qme testgen` / `qme practice` (no LLM) | 60 tests, live bank smoke |
+| Test Generation API v2 | — | friendly test shape (sources × chapters × difficulty × count rules), `POST /tests/submit`, paginated practice, chapter knowledge endpoint, multi-source bank | 387 tests |
 
-Quality gates on `main`: **301 offline tests passing**, `ruff check src tests` clean,
-`mypy` clean (45 files). Three opt-in live evals deselected by default (`pytest -m ai_eval`).
+Quality gates on `main`: **387 offline tests passing**, `ruff check src tests` clean,
+`mypy` clean (49 files). Three opt-in live evals deselected by default (`pytest -m ai_eval`).
 
 ### Current work
 
@@ -105,14 +106,22 @@ from `data/input/` (the junk stays out of the image). `Procfile` +
 ```bash
 BASE=https://<app>.up.railway.app
 curl $BASE/api/v1/health                                  # 200, no key
-curl -H "X-API-Key: $QME_API_KEY" $BASE/api/v1/bank/meta  # discovery
+curl -H "X-API-Key: $QME_API_KEY" $BASE/api/v1/bank/meta  # discovery: sources, qualified chapters
 curl -X POST -H "X-API-Key: $QME_API_KEY" -H 'Content-Type: application/json' \
-  -d '{"seed":42,"selections":[{"count":20,"difficulty":"hard"}]}' \
-  $BASE/api/v1/tests                                      # 200 GeneratedTest
+  -d '{"seed":42,"count":20,"difficulty":{"mode":"single","value":"hard"}}' \
+  $BASE/api/v1/tests                                      # 200 GeneratedTest (legacy {"selections":[...]} also accepted)
+curl -X POST -H "X-API-Key: $QME_API_KEY" -H 'Content-Type: application/json' \
+  -d '{"request":<test body>,"answers":{"q-1":"B"},"elapsed_seconds":540}' \
+  $BASE/api/v1/tests/submit                               # 200 TestResult (score + breakups + solutions)
+curl -X POST -H "X-API-Key: $QME_API_KEY" -d '{"chapter":"Percentage","count":5,"page":2}' \
+  $BASE/api/v1/practice                                   # 200 PracticeSet (page 2 of the same seed)
+curl -H "X-API-Key: $QME_API_KEY" "$BASE/api/v1/chapters/Percentage/knowledge?topic=Successive%20Percentages"
+                                                          # 200 ChapterKnowledge (formulas + short tricks)
 ```
 
 Errors follow `API_CONTRACTS` §4: 401 `UNAUTHORIZED` (missing/wrong key),
-422 `VALIDATION_ERROR`/`INVALID_INPUT` (`details` lists available filters),
-503 `SERVICE_UNAVAILABLE` (bank contract report in `details.issues`). The
-bank reloads automatically when its files change (mtime check) — update the
-bank by committing the changed files and pushing.
+404 `NOT_FOUND`, 422 `VALIDATION_ERROR`/`INVALID_INPUT` (`details` lists
+violations / available filters), 503 `SERVICE_UNAVAILABLE` (bank contract
+report in `details.issues`). The bank reloads automatically when any of the
+three input files change (mtime check) — update the bank by committing the
+changed files and pushing.

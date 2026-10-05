@@ -145,6 +145,7 @@ def testgen(
     blueprint: Annotated[Path, typer.Option("--blueprint", help="aptitude_test_blueprint.json path.")],
     output: Annotated[Path, typer.Option("--output", help="Output directory.")],
     count: Annotated[int, typer.Option("--count", min=1, help="Questions to select.")] = 10,
+    source: Annotated[str | None, typer.Option("--source")] = None,
     chapter: Annotated[str | None, typer.Option("--chapter")] = None,
     topic: Annotated[str | None, typer.Option("--topic")] = None,
     difficulty: Annotated[str | None, typer.Option("--difficulty", help="easy | medium | hard")] = None,
@@ -163,6 +164,7 @@ def testgen(
             selections=[
                 Selection(
                     count=count,
+                    source=source,
                     chapter=chapter,
                     topic=topic,
                     difficulty=difficulty,  # type: ignore[arg-type]
@@ -191,7 +193,9 @@ def testgen(
 def practice(
     blueprint: Annotated[Path, typer.Option("--blueprint", help="aptitude_test_blueprint.json path.")],
     output: Annotated[Path, typer.Option("--output", help="Output directory.")],
-    count: Annotated[int, typer.Option("--count", min=1, help="Questions in the set.")] = 10,
+    count: Annotated[int, typer.Option("--count", min=1, help="Questions per page.")] = 10,
+    page: Annotated[int, typer.Option("--page", min=1, help="1-based page number.")] = 1,
+    source: Annotated[str | None, typer.Option("--source")] = None,
     chapter: Annotated[str | None, typer.Option("--chapter")] = None,
     topic: Annotated[str | None, typer.Option("--topic")] = None,
     difficulty: Annotated[str | None, typer.Option("--difficulty", help="easy | medium | hard")] = None,
@@ -201,7 +205,7 @@ def practice(
     title: Annotated[str | None, typer.Option("--title")] = None,
     fmt: Annotated[str, typer.Option("--format", help="json | md | both")] = "both",
 ) -> None:
-    """Build a practice set (easy->hard progressive or seeded mixed order)."""
+    """Build one page of a practice set (easy->hard progressive or seeded mixed order)."""
     try:
         bank = load_bank(blueprint)
         request = PracticeRequest(
@@ -209,6 +213,8 @@ def practice(
             title=title,
             seed=seed,
             count=count,
+            page=page,
+            source=source,
             chapter=chapter,
             topic=topic,
             difficulty=difficulty,  # type: ignore[arg-type]
@@ -226,7 +232,13 @@ def practice(
         practice_to_markdown(practice_set),
         fmt,
     )
+    pagination = practice_set.pagination
+    page_info = (
+        f", page {pagination.page}/{pagination.total_pages} of {pagination.total}"
+        if pagination
+        else ""
+    )
     typer.echo(
         f"practice {practice_set.practice_id}: {practice_set.coverage.total} questions, "
-        f"mode={practice_set.mode}"
+        f"mode={practice_set.mode}{page_info}"
     )

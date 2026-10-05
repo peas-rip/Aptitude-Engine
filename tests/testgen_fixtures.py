@@ -31,6 +31,7 @@ def make_question(
     skills: list[str] | None = None,
     question_type: str = "mcq",
     seconds: int = 30,
+    source: str = "book.pdf",
 ) -> dict:
     return {
         "question_id": qid,
@@ -57,7 +58,7 @@ def make_question(
             "solution_basis": "source_answer_key_plus_topic_method",
         },
         "formula_refs": [],
-        "source": {"name": "book.pdf", "type": "pdf", "page": page, "question_id": qid},
+        "source": {"name": source, "type": "pdf", "page": page, "question_id": qid},
     }
 
 
@@ -70,6 +71,29 @@ def default_questions() -> list[dict]:
         make_question("q5", difficulty="hard", chapter="Time & Work", topic="Work Rate"),
         make_question("q6", difficulty="easy", chapter="Time & Work", topic="Work Rate", page=30),
     ]
+
+
+def big_questions() -> list[dict]:
+    """30 questions (15 easy / 10 medium / 5 hard) — satisfies the friendly
+    rule table (minimum 10, all-chapters minimum 30, feasibility)."""
+    questions: list[dict] = []
+    for i in range(15):
+        questions.append(make_question(f"e{i:02d}", difficulty="easy"))
+    for i in range(10):
+        questions.append(
+            make_question(f"m{i:02d}", difficulty="medium", page=15 + i)
+        )
+    for i in range(5):
+        questions.append(
+            make_question(
+                f"h{i:02d}",
+                difficulty="hard",
+                chapter="Time & Work",
+                topic="Work Rate",
+                page=25 + i,
+            )
+        )
+    return questions
 
 
 def _buckets(questions: list[dict]) -> dict:

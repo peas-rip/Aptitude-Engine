@@ -46,10 +46,12 @@ def test_practice_markdown_contains_knowledge_and_answers(tmp_path):
     assert "</details>" in md
 
 
-def test_practice_markdown_notes_shortage(tmp_path):
+def test_practice_markdown_shows_pagination(tmp_path):
     bank = load_bank(write_bank(tmp_path))
     practice = generate_practice(
         bank, PracticeRequest(count=20, difficulty="hard", seed=1)
     )
     md = renderers.practice_to_markdown(practice)
-    assert "1/20 requested" in md
+    assert "**page:** 1/1 (pool 1, page size 20, has_more=False)" in md
+    assert "**seed:** 1" in md
+    assert "requested" not in md
