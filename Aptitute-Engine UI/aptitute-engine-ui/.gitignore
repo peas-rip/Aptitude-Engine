@@ -1,0 +1,17 @@
+.dyad/
+
+# Dependencies
+node_modules/
+
+# Build output (spec §16.2: never ship or commit secrets from dist/)
+dist/
+*.tsbuildinfo
+
+# Local env — VITE_QME_* / QME_BASE_URL live here, never in the bundle
+.env
+.env.*
+*.local
+
+# Logs / editor
+*.log
+.DS_Store

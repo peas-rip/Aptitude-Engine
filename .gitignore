@@ -58,6 +58,10 @@ logs/
 # Jupyter
 .ipynb_checkpoints/
 
+# Frontend (Aptitute-Engine UI): the Python `lib/` rule above must not
+# swallow the app's own source folder, which holds qme-client + rule modules.
+!Aptitute-Engine UI/aptitute-engine-ui/src/lib/
+
 # Book source data (never commit; input corpus)
 data/input/*
 # Upstream contract files = the Test & Practice Agent's bank.
